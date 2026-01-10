@@ -10,6 +10,11 @@
 
 # production
 /build
+/dist
+
+# vide
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 
 # misc
 .DS_Store
