@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Protocol, Vault, Position
 
-# Register your models here.
+admin.site.register(Protocol)
+admin.site.register(Vault)
+admin.site.register(Position)
+
