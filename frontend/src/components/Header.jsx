@@ -4,11 +4,13 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
+  { name: 'Dashboard', href: '/dashboard', current: true },
+  { name: 'Profile', href: '/profile', current: false },
   { name: 'Market Today', href: '#', current: false },
   { name: 'Risk Prediction', href: '#', current: false },
-  { name: 'Procedural Docs', href: '#', current: false },
+  { name: 'Procedural Docs', href: '#', current: false }, // Restored
 ];
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
