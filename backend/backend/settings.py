@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'auth_web3',
     'rest_framework',
     'corsheaders',
-    'defi'
+    'defi',
+    'risk_engine'
 ]
 
 MIDDLEWARE = [
