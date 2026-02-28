@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/auth/", include("auth_web3.urls")),
     path("api/defi/", include("defi.urls")),
+    path("api/risk/", include("risk_engine.urls")),
 ]
 
