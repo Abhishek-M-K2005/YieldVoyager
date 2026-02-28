@@ -18,7 +18,6 @@ if ML_LIBRARIES_AVAILABLE and os.path.exists(MODEL_PATH):
     except Exception:
         pass
 
-FEATURE_ORDER = [
 
 FEATURE_ORDER = [
     "tvl_change_24h",
