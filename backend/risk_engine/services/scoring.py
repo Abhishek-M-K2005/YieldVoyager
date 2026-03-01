@@ -5,6 +5,7 @@ from risk_engine.models import RiskSnapshot
 def normalize_score(prob):
     return round(prob * 10, 2)
 
+
 def risk_band(score):
     if score < 3:
         return "low"

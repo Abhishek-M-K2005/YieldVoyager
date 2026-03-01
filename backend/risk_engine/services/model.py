@@ -23,7 +23,7 @@ FEATURE_ORDER = [
     "tvl_change_24h",
     "tvl_change_7d",
     "liquidity_depth",
-    "utilisation_ratio",
+    "utilization_ratio",
     "oracle_price_std",
     "liquidation_spike_ratio",
     "protocol_age_days",
@@ -44,7 +44,7 @@ def predict_probability(features_dict):
     if features_dict.get("tvl_change_24h", 0) < -0.05: score_contribution += 0.2
     if features_dict.get("tvl_change_7d", 0) < -0.10: score_contribution += 0.3
     if features_dict.get("liquidity_depth", 0) < 1_000_000: score_contribution += 0.2
-    if features_dict.get("utilisation_ratio", 0) > 0.8: score_contribution += 0.1
+    if features_dict.get("utilization_ratio", 0) > 0.8: score_contribution += 0.1
     if features_dict.get("oracle_price_std", 0) > 0.05: score_contribution += 0.2
     
     return min(max(score_contribution, 0), 1.0)

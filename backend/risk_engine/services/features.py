@@ -1,32 +1,56 @@
-import random
+import requests
+from datetime import datetime
 from defi.models import Vault
-
-def get_protocol_features(protocol):
-    # In a real scenario, fetch from DefiLlama / TheGraph
-    # We will simulate data for demo purposes
+def build_protocol_features(protocol):
+    tvl_change_24h, tvl_change_7d = get_tvl_changes(protocol.name)
     
-    total_tvl = sum(v.tvl for v in Vault.objects.filter(protocol=protocol))
+    liquidity_depth = sum(
+        vault.tvl for vault in Vault.objects.filter(protocol = protocol)
+    )
     
-    # Mock Feature Pipeline
+    utilization_ratio = 0.6
+    oracle_price_std = 0.05
+    liquidation_spike_ratio = 1.1
+    
+    if hasattr(protocol, "created_at") and protocol.created_at:
+        protocol_age_days = (
+            datetime.now().date() - protocol.created_at.date()
+        ).days
+    else:
+        protocol_age_days = 365
+        
+    audit_count = getattr(protocol, "audit_count", 1)
+    
     return {
-        "tvl_change_24h": -0.05 + random.uniform(-0.02, 0.02),
-        "tvl_change_7d": -0.12 + random.uniform(-0.05, 0.05),
-        "liquidity_depth": total_tvl * 0.1,  # Assume 10% liquidity depth
-        "utilisation_ratio": 0.65 + random.uniform(-0.1, 0.1),
-        "oracle_price_std": 0.08 + random.uniform(-0.01, 0.01),
-        "liquidation_spike_ratio": 1.3,
-        "protocol_age_days": 600, # Would be calculated from created_at
-        "audit_count": 3,
+        "tvl_change_24h": tvl_change_24h,
+        "tvl_change_7d": tvl_change_7d,
+        "liquidity_depth":liquidity_depth,
+        "utilisation_ratio": utilisation_ratio,
+        "oracle_price_std": oracle_price_std,
+        "liquidation_spike_ratio": liquidation_spike_ratio,
+        "protocol_age_days": protocol_age_days,
+        "audit_count": audit_count,
     }
-
-def build_features(protocol_metrics):
-    return {
-        "tvl_change_24h": protocol_metrics["tvl_change_24h"],
-        "tvl_change_7d" : protocol_metrics["tvl_change_7d"],
-        "liquidity_depth": protocol_metrics["liquidity_depth"],
-        "utilisation_ratio": protocol_metrics["utilisation_ratio"],
-        "oracle_price_std": protocol_metrics["oracle_price_std"],
-        "liquidation_spike_ratio": protocol_metrics["liquidation_spike_ratio"],
-        "protocol_age_days": protocol_metrics["protocol_age_days"],
-        "audit_count": protocol_metrics["audit_count"],
-    }
+        
+    
+def get_tvl_changes(protocol_name):
+    try:
+        url = f"https://api.llama.fi/protocol/{protocol_name.lower()}"
+        response = requests.get(url, timeout = 5)
+        data = response.json()
+        tvl_data = data.get("tvl", [])
+        
+        if len(tvl_data) < 8:
+            return 0.0, 0.0
+        
+        latest = tvl_data[-1]["totalLiquidityUSD"]
+        tvl_24h_ago = tvl_data[-2]["totalLiquidityUSD"]
+        tvl_7d_ago = tvl_data[-8]["totalLiquidityUSD"]
+        change_24h = (latest - tvl_24h_ago)/tvl_24h_ago if tvl_change_24h else 0
+        change_7h = (latest - tvl_7h_ago)/tvl_7h_ago if tvl_change_7h else 0
+        
+        return change_24h, change_7d
+    except:
+        return 0.0, 0.0
+    
+    
