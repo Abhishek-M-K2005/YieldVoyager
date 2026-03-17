@@ -1,19 +1,33 @@
-const API = "http://localhost:8000/api/auth";
+const API_BASE = "http://127.0.0.1:8000/api/auth";
 
-export const getNonce = async (address) => {
-  const res = await fetch(`${API}/nonce/`, {
+export async function getNonce(address) {
+  const response = await fetch(`${API_BASE}/nonce/`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ address })
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address }),
   });
-  return res.json();
-};
 
-export const verifySignature = async (address, signature) => {
-  const res = await fetch(`${API}/verify/`, {
+  if (!response.ok) {
+    throw new Error("Failed to fetch nonce");
+  }
+
+  return response.json();
+}
+
+export async function verifySignature(address, signature) {
+  const response = await fetch(`${API_BASE}/verify/`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ address, signature })
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address, signature }),
   });
-  return res.json();
-};
+
+  if (!response.ok) {
+    throw new Error("Signature verification failed");
+  }
+
+  return response.json();
+}

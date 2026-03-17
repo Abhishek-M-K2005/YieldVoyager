@@ -1,11 +1,33 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { computeRisk } from "../api/risk";
 
 export default function Dashboard() {
   const { balance, network, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [riskResult, setRiskResult] = useState(null);
+
+  const handleComputeRisk = async () => {
+    try {
+      const metrics = {
+        tvl_change_24h: -0.05,
+        tvl_change_7d: -0.12,
+        liquidity_depth: 1000000,
+        utilization_ratio: 0.65,
+        oracle_price_std: 0.08,
+        liquidation_spike_ratio: 1.3,
+        protocol_age_days: 600,
+        audit_count: 3
+      };
+
+      const result = await computeRisk(1, metrics);
+      setRiskResult(result);
+    } catch (error) {
+      console.error("Risk computation failed:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
@@ -47,8 +69,8 @@ export default function Dashboard() {
 
           <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-orange-500/50 transition-all">
             <p className="text-xs font-bold text-orange-400 uppercase tracking-widest">Risk Prediction</p>
-            <p className="text-3xl font-mono mt-3">Moderate</p>
-            <p className="text-sm text-gray-500 mt-2">Confidence: 94.2%</p>
+            <p className="text-3xl font-mono mt-3">{riskResult ? riskResult.level : "Pending"}</p>
+            <p className="text-sm text-gray-500 mt-2">{riskResult ? `Score: ${riskResult.risk_score}` : "Run Analysis"}</p>
           </div>
         </div>
 
@@ -60,7 +82,12 @@ export default function Dashboard() {
           <h2 className="text-2xl font-bold mb-3">Ready to deploy capital?</h2>
           <p className="text-gray-400 max-w-lg mb-8">The AI engine has identified 3 new liquidity pools with an average APY of 14.2% on the {network} network.</p>
           <div className="flex gap-4">
-            <button className="bg-violet-600 hover:bg-violet-700 px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-violet-500/20">Analyze Yields</button>
+            <button 
+                onClick={handleComputeRisk}
+                className="bg-violet-600 hover:bg-violet-700 px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-violet-500/20"
+            >
+                Analyze Yields
+            </button>
             <button onClick={logout} className="bg-white/5 hover:bg-white/10 px-8 py-3 rounded-2xl font-bold transition-all">Logout</button>
           </div>
         </div>
