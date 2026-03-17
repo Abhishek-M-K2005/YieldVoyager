@@ -9,29 +9,24 @@ class ProtocolRiskView(APIView):
     def post(self, request, protocol_id):
         protocol = get_object_or_404(Protocol, id=protocol_id)
         
-        protocol_metrics = request.data
         
-        required_fields = [
-            "tvl_change_24h",
-            "tvl_change_7d",
-            "liquidity_depth",
-            "utilization_ratio",
-            "oracle_price_std",
-            "liquidation_spike_ratio",
-            "protocol_age_days",
-            "audit_count",
-        ]
-        for field in required_fields:
-            if field not in protocol_metrics:
-                return Response(
-                    {"error": f"Missing field: {field}"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        result = compute_and_store_risk(protocol, protocol_metrics)
+        features = {
+
+            "tvl_change_24h": request.data.get("tvl_change_24h"),
+            "tvl_change_7d": request.data.get("tvl_change_7d"),
+            "liquidity_depth": request.data.get("liquidity_depth"),
+            "utilization_ratio": request.data.get("utilization_ratio"),
+            "oracle_price_std": request.data.get("oracle_price_std"),
+            "liquidation_spike_ratio": request.data.get("liquidation_spike_ratio"),
+            "impermanent_loss_risk": request.data.get("impermanent_loss_risk"),
+            "protocol_age_days": request.data.get("protocol_age_days")
+        }
+        
+        result = compute_and_store_risk(protocol, features)
         
         return Response({
             "protocol": protocol.name,
             **result
-        })
+        }, status = status.HTTP_200_OK)
         
         
