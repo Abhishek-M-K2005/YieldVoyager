@@ -2,15 +2,16 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { Link, useLocation } from 'react-router-dom'; // 1. Imported Link and useLocation
 
+// 2. Updated routes and removed hardcoded 'current' status
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', current: true },
-  { name: 'Profile', href: '/profile', current: false },
-  { name: 'Market Today', href: '/market', current: false },
-  { name: 'Risk Prediction', href: '/predict', current: false },
-  { name: 'Procedural Docs', href: '/docs', current: false }, // Restored
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Profile', href: '/profile' },
+  { name: 'Market Today', href: '/market' },
+  { name: 'Risk Prediction', href: '/predict' },
+  { name: 'Procedural Docs', href: '/docs' },
 ];
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -18,6 +19,7 @@ function classNames(...classes) {
 
 export default function Header() {
   const { token, balance, network } = useContext(AuthContext);
+  const location = useLocation(); // 3. This reads the current URL so we know what to highlight
 
   // Capitalize network name
   const networkName = network ? network.charAt(0).toUpperCase() + network.slice(1) : '';
@@ -43,19 +45,22 @@ export default function Header() {
               <h1 className="text-white font-extrabold font-mono ">YieldVoyager</h1>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  aria-current={item.current ? 'page' : undefined}
-                  className={classNames(
-                    item.current ? 'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
-                    'rounded-md px-3 py-2 text-sm font-medium',
-                  )}
-                >
-                  {item.name}
-                </a>
-              ))}
+              {navigation.map((item) => {
+                const isCurrent = location.pathname === item.href; // Dynamically check if active
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href} // Swapped href to 'to' for React Router
+                    aria-current={isCurrent ? 'page' : undefined}
+                    className={classNames(
+                      isCurrent ? 'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
+                      'rounded-md px-3 py-2 text-sm font-medium',
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
@@ -72,20 +77,23 @@ export default function Header() {
       {/* Mobile nav */}
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 px-2 pt-2 pb-3">
-          {navigation.map((item) => (
-            <DisclosureButton
-              key={item.name}
-              as="a"
-              href={item.href}
-              aria-current={item.current ? 'page' : undefined}
-              className={classNames(
-                item.current ? 'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
-              )}
-            >
-              {item.name}
-            </DisclosureButton>
-          ))}
+          {navigation.map((item) => {
+            const isCurrent = location.pathname === item.href;
+            return (
+              <DisclosureButton
+                key={item.name}
+                as={Link} // Swapped 'a' to 'Link'
+                to={item.href} // Swapped href to 'to'
+                aria-current={isCurrent ? 'page' : undefined}
+                className={classNames(
+                  isCurrent ? 'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
+                  'block rounded-md px-3 py-2 text-base font-medium',
+                )}
+              >
+                {item.name}
+              </DisclosureButton>
+            );
+          })}
 
           {/* Mobile wallet balance */}
           {token && (
