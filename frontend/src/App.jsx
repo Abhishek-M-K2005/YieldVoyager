@@ -1,8 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-// 1. Import your new Profile page
 import Profile from "./pages/Profile"; 
+
+// 1. Import your 3 new pages
+import MarketToday from "./pages/MarketToday";
+import RiskPrediction from "./pages/RiskPrediction";
+import ProceduralDocs from "./pages/ProceduralDocs";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -11,8 +16,10 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          {/* PUBLIC ROUTE */}
           <Route path="/" element={<Login />} />
           
+          {/* PROTECTED ROUTES (Requires Web3 Auth) */}
           <Route
             path="/dashboard"
             element={
@@ -27,6 +34,34 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* The New Navbar Routes */}
+          <Route
+            path="/market"
+            element={
+              <ProtectedRoute>
+                <MarketToday />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/predict"
+            element={
+              <ProtectedRoute>
+                <RiskPrediction />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/docs"
+            element={
+              <ProtectedRoute>
+                <ProceduralDocs />
               </ProtectedRoute>
             }
           />
