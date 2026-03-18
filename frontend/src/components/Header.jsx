@@ -6,9 +6,9 @@ import { AuthContext } from '../context/AuthContext';
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: true },
   { name: 'Profile', href: '/profile', current: false },
-  { name: 'Market Today', href: '#', current: false },
-  { name: 'Risk Prediction', href: '#', current: false },
-  { name: 'Procedural Docs', href: '#', current: false }, // Restored
+  { name: 'Market Today', href: '/market', current: false },
+  { name: 'Risk Prediction', href: '/predict', current: false },
+  { name: 'Procedural Docs', href: '/docs', current: false }, // Restored
 ];
 
 
