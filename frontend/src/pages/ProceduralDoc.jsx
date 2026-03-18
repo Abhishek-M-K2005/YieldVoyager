@@ -1,7 +1,7 @@
 // src/pages/ProceduralDocs.jsx
 import React from 'react';
 
-export default function ProceduralDocs() {
+export default function ProceduralDoc() {
   return (
     <div>
       {/* Static text structure to style */}
