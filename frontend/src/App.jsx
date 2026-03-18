@@ -6,7 +6,7 @@ import Profile from "./pages/Profile";
 // 1. Import your 3 new pages
 import MarketToday from "./pages/MarketToday";
 import RiskPrediction from "./pages/RiskPrediction";
-import ProceduralDocs from "./pages/ProceduralDocs";
+import ProceduralDoc from "./pages/ProceduralDoc";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -61,7 +61,7 @@ function App() {
             path="/docs"
             element={
               <ProtectedRoute>
-                <ProceduralDocs />
+                <ProceduralDoc />
               </ProtectedRoute>
             }
           />
