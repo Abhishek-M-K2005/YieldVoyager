@@ -51,3 +51,37 @@ class VerifySignatureView(APIView):
             "access": str(refresh.access_token),
             "refresh": str(refresh),
         })
+
+from rest_framework.permissions import IsAuthenticated
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        wallet_address = request.user.username
+        try:
+            user = WalletUser.objects.get(wallet_address=wallet_address)
+            data = {
+                "wallet_address": user.wallet_address,
+                "username": user.username,
+                "email": user.email,
+                "risk_tolerance": user.risk_tolerance,
+                "investment_goal": user.investment_goal,
+                "created_at": user.created_at
+            }
+            return Response(data)
+        except WalletUser.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)
+
+    def put(self, request):
+        wallet_address = request.user.username
+        try:
+            user = WalletUser.objects.get(wallet_address=wallet_address)
+            user.username = request.data.get("username", user.username)
+            user.email = request.data.get("email", user.email)
+            user.risk_tolerance = request.data.get("risk_tolerance", user.risk_tolerance)
+            user.investment_goal = request.data.get("investment_goal", user.investment_goal)
+            user.save()
+            return Response({"message": "Profile updated successfully"})
+        except WalletUser.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)

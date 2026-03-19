@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import NonceView, VerifySignatureView
+from .views import NonceView, VerifySignatureView, UserProfileView
 
 urlpatterns = [
     path("nonce/", NonceView.as_view()),
     path("verify/", VerifySignatureView.as_view()),
+    path("profile/", UserProfileView.as_view()),
 ]

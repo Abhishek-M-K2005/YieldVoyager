@@ -7,6 +7,7 @@ class Protocol(models.Model):
     DeFi protocol like Aave, Compound, Curve
     """
     name = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50, unique=True, null=True)
     chain = models.CharField(max_length=20)
     website = models.URLField(blank=True)
     risk_level = models.CharField(

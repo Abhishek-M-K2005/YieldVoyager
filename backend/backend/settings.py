@@ -107,6 +107,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
+
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
