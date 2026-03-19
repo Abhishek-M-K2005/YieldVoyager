@@ -14,3 +14,4 @@ code {
 }
 
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";

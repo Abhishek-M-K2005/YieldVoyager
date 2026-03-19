@@ -1,9 +1,20 @@
 import os
 
-# TODO: Set up your LLM client here
-# Example using OpenAI:
-# import openai
-# openai.api_key = os.getenv("OPENAI_API_KEY")
+# Set up your LLM client here
+client = None
+types = None
+
+try:
+    from google import genai
+    from google.genai import types
+    
+    api_key = os.getenv("GEMINI_API_KEY")
+    if api_key:
+        client = genai.Client(api_key=api_key)
+except ImportError:
+    print("Warning: google-genai package not installed or import error. LLM features disabled.")
+except Exception as e:
+    print(f"Error initializing LLM client: {e}")
 
 def generate_risk_explanation(model_features, risk_result, user_wallet_address, user_balance):
     """
@@ -19,12 +30,7 @@ def generate_risk_explanation(model_features, risk_result, user_wallet_address, 
         str: A natural language explanation of the context and risks.
     """
     
-    # Fetch related context from Vector DB (ChromaDB)
-    from risk_engine.services.vector_db import get_similar_contexts
-    search_query = f"Risk context for protocol with level {risk_result.get('level')} and {model_features.get('liquidity_depth')} liquidity."
-    retrieved_contexts = get_similar_contexts(search_query)
-    
-    context_string = "\n".join(retrieved_contexts) if retrieved_contexts else "No historical context available."
+    context_string = "No historical context available."
 
     # Construct a detailed prompt providing all context to the LLM
     prompt = f"""
@@ -38,45 +44,41 @@ def generate_risk_explanation(model_features, risk_result, user_wallet_address, 
     
     ### Protocol Metrics (Model Input)
     - 24h TVL Change: {model_features.get('tvl_change_24h')}
-    - 7d TVL Change: {model_features.get('tvl_change_7d')}
+    - 7d TVL Change: {model_features.get('tvl_change_7d', 'N/A')}
     - Liquidity Depth: ${model_features.get('liquidity_depth')}
-    - Utilization Ratio: {model_features.get('utilization_ratio')}
-    - Oracle Price Std Dev: {model_features.get('oracle_price_std')}
-    - Liquidation Spike Ratio: {model_features.get('liquidation_spike_ratio')}
     - Protocol Age: {model_features.get('protocol_age_days')} days
     
     ### AI Risk Engine Evaluation (Model Output)
     - Risk Score: {risk_result.get('risk_score')} / 10.0
     - Risk Level: {risk_result.get('level')}
-    - Triggered Hard Flags: {', '.join(risk_result.get('flags', [])) if risk_result.get('flags') else 'None'}
-    
-    ### Retrieved Context from Vector Database (RAG)
-    {context_string}
-    
-    Please explain specifically WHY the AI Risk engine gave this score based on the provided metrics and the retrieved context. Also, give the user personalized advice considering their current wallet balance. Keep the explanation under 4 sentences.
+
+    Please explain:
+    1. Why the risk score is what it is based on the metrics.
+    2. Any specific warning signs (like low liquidity or high volatility).
+    3. A recommendation for the user based on their wallet balance (e.g. appropriate sizing).
     """
-    
-    # ---------------------------------------------------------
-    # TODO: Make the actual API call to your LLM provider here.
-    # ---------------------------------------------------------
-    
-    # Example snippet for OpenAI:
-    # try:
-    #     response = openai.ChatCompletion.create(
-    #         model="gpt-4",
-    #         messages=[
-    #             {"role": "system", "content": "You are a helpful DeFi risk assistant."},
-    #             {"role": "user", "content": prompt}
-    #         ]
-    #     )
-    #     return response.choices[0].message.content
-    # except Exception as e:
-    #     return f"Failed to generate explanation. Error: {str(e)}"
-    
-    # Temporary mock response until LLM is configured
-    return (
-        f"Based on the provided metrics, this protocol presents a {risk_result.get('level')} risk "
-        f"(Score: {risk_result.get('risk_score')}/10). The TVL change and liquidity depth were the primary factors "
-        "in this assessment. Given your balance of {user_balance} ETH, you should ensure you do not over-allocate "
-        "your portfolio into high-risk yielding positions."
-    )
+
+    if not client:
+        return (
+            f"**Simulated AI Response (No API Key found):**\n\n"
+            f"The protocol has a risk score of {risk_result.get('risk_score')}/10 ({risk_result.get('level')}). "
+            f"Based on the liquidity depth of ${model_features.get('liquidity_depth')}, it appears to be a stable protocol. "
+            f"However, recent TVL changes ({model_features.get('tvl_change_24h')}) suggest some volatility. "
+            f"As a user with {user_balance} ETH, you should consider diversifying your position."
+        )
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                system_instruction="You are a helpful DeFi risk assistant.",
+                max_output_tokens=250,
+                temperature=0.7
+            )
+        )
+        # In the native SDK, the text is at .text
+        return response.text.strip()
+        
+    except Exception as e:
+        return f"Error generating explanation: {str(e)}"

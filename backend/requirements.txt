@@ -2,3 +2,5 @@ apscheduler
 requests
 chromadb
 openai
+python-dotenv
+google-genai

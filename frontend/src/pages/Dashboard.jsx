@@ -76,7 +76,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-violet-500/50 transition-all group">
             <p className="text-xs font-bold text-violet-400 uppercase tracking-widest">Active Balance</p>
-            <p className="text-4xl font-mono mt-3">{balance} <span className="text-lg text-gray-500">ETH</span></p>
+            <p className="text-4l font-mono mt-3">{Number(balance).toFixed(18)} <span className="text-lg text-gray-500">ETH</span></p>
             <div className="mt-4 h-1 w-full bg-white/10 rounded-full overflow-hidden">
               <div className="h-full bg-violet-500 w-[70%]"></div>
             </div>
