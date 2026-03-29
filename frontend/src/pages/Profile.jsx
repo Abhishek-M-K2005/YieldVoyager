@@ -19,12 +19,16 @@ export default function Profile() {
   const { wallet, balance, network, token } = useContext(AuthContext);
   const navigate = useNavigate();
 
-
   // --- LOCAL STORAGE STATES ---
   const [theme, setTheme] = useState(() => localStorage.getItem('yv_theme') || 'violet');
   const [privacyMode, setPrivacyMode] = useState(() => JSON.parse(localStorage.getItem('yv_privacy')) || false);
   const [currency, setCurrency] = useState(() => localStorage.getItem('yv_currency') || 'ETH');
-  
+
+  // Backend User Preferences
+  const [riskTolerance, setRiskTolerance] = useState('medium');
+  const [investmentGoal, setInvestmentGoal] = useState('Long-term Growth');
+  const [savingPrefs, setSavingPrefs] = useState(false);
+
   // Address Book State
   const [addressBook, setAddressBook] = useState(() => JSON.parse(localStorage.getItem('yv_addresses')) || []);
   const [newAddrName, setNewAddrName] = useState('');
@@ -35,6 +39,40 @@ export default function Profile() {
   useEffect(() => { localStorage.setItem('yv_privacy', JSON.stringify(privacyMode)); }, [privacyMode]);
   useEffect(() => { localStorage.setItem('yv_currency', currency); }, [currency]);
   useEffect(() => { localStorage.setItem('yv_addresses', JSON.stringify(addressBook)); }, [addressBook]);
+
+  // Load backend profile
+  useEffect(() => {
+    const loadBackendProfile = async () => {
+      try {
+        const storedToken = localStorage.getItem('token') || token;
+        if (storedToken) {
+          const data = await getProfile(storedToken);
+          if (data.risk_tolerance) setRiskTolerance(data.risk_tolerance);
+          if (data.investment_goal) setInvestmentGoal(data.investment_goal);
+        }
+      } catch (e) {
+        console.error("Failed to load backend profile preferences", e);
+      }
+    };
+    loadBackendProfile();
+  }, [token]);
+
+  const handleSavePreferences = async () => {
+    setSavingPrefs(true);
+    try {
+      const storedToken = localStorage.getItem('token') || token;
+      if (storedToken) {
+        await updateProfile(storedToken, { risk_tolerance: riskTolerance, investment_goal: investmentGoal });
+        alert("Risk preferences successfully saved to Web3 Profile!");
+      } else {
+        alert("Not authenticated.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to save preferences.");
+    }
+    setSavingPrefs(false);
+  };
 
   // --- HELPER FUNCTIONS ---
   const currentTheme = themeColors[theme];
@@ -61,17 +99,17 @@ export default function Profile() {
     <div className="min-h-screen bg-[#0f172a] text-white pb-20">
       <Header />
       <main className="max-w-4xl mx-auto px-6 py-12">
-        
+
         {/* Navigation */}
         <button onClick={() => navigate('/dashboard')} className={`${currentTheme.text} ${currentTheme.hoverText} mb-8 flex items-center gap-2 transition-all font-medium`}>
           ← Back to Dashboard
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
+
           {/* LEFT COLUMN: Main Profile & Stats */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* Identity Card */}
             <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 backdrop-blur-lg">
               <div className="flex items-center gap-6 mb-8">
@@ -116,27 +154,71 @@ export default function Profile() {
             </div>
 
 
+            {/* Risk Preferences Card */}
+            <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 backdrop-blur-lg mb-6">
+              <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                Risk Engine Preferences
+              </h3>
+              <p className="text-gray-400 text-sm mb-6">These settings are sent to the AI ML engine when analyzing protocols.</p>
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Risk Tolerance</label>
+                  <select
+                    value={riskTolerance}
+                    onChange={(e) => setRiskTolerance(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gray-500"
+                  >
+                    <option value="low">Low (Conservative)</option>
+                    <option value="medium">Medium (Moderate)</option>
+                    <option value="high">High (Aggressive)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Investment Goal</label>
+                  <input
+                    type="text"
+                    value={investmentGoal}
+                    onChange={(e) => setInvestmentGoal(e.target.value)}
+                    placeholder="e.g. Yield Farming, Capital Preservation"
+                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gray-500"
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={handleSavePreferences}
+                    disabled={savingPrefs}
+                    className={`w-full ${currentTheme.bg} hover:opacity-80 px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-50`}
+                  >
+                    {savingPrefs ? "Saving..." : "Update AI Profile Preferences"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {/* Address Book Card */}
             <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 backdrop-blur-lg">
               <h3 className="text-xl font-bold mb-6">Local Address Book</h3>
               <p className="text-gray-400 text-sm mb-6">Save frequently used addresses directly to your browser.</p>
-              
+
               <div className="flex gap-3 mb-6">
-                <input 
-                  type="text" 
-                  placeholder="Name (e.g., Vault)" 
+                <input
+                  type="text"
+                  placeholder="Name (e.g., Vault)"
                   value={newAddrName}
                   onChange={(e) => setNewAddrName(e.target.value)}
                   className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gray-500"
                 />
-                <input 
-                  type="text" 
-                  placeholder="0x..." 
+                <input
+                  type="text"
+                  placeholder="0x..."
                   value={newAddrValue}
                   onChange={(e) => setNewAddrValue(e.target.value)}
                   className="flex-[2] bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-gray-500"
                 />
-                <button 
+                <button
                   onClick={handleAddAddress}
                   className={`${currentTheme.bg} hover:opacity-80 px-6 py-3 rounded-xl font-bold transition-all`}
                 >
@@ -168,17 +250,17 @@ export default function Profile() {
           {/* RIGHT COLUMN: Settings & Preferences */}
           <div className="space-y-6">
 
-            
+
             <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 backdrop-blur-lg">
               <h3 className="text-xl font-bold mb-8">App Settings</h3>
-              
+
               {/* Privacy Toggle */}
               <div className="flex justify-between items-center mb-8">
                 <div>
                   <p className="font-bold">Privacy Mode</p>
                   <p className="text-gray-400 text-xs mt-1">Hide balances on screen</p>
                 </div>
-                <button 
+                <button
                   onClick={() => setPrivacyMode(!privacyMode)}
                   className={`w-12 h-6 rounded-full transition-colors relative ${privacyMode ? currentTheme.bg : 'bg-gray-700'}`}
                 >
@@ -191,7 +273,7 @@ export default function Profile() {
                 <p className="font-bold mb-3">Base Currency</p>
                 <div className="flex gap-2 p-1 bg-black/40 rounded-xl">
                   {['ETH', 'USD', 'EUR'].map((curr) => (
-                    <button 
+                    <button
                       key={curr}
                       onClick={() => setCurrency(curr)}
                       className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${currency === curr ? `${currentTheme.bg} text-white shadow-lg` : 'text-gray-500 hover:text-white'}`}

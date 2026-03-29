@@ -62,31 +62,9 @@ export default function Dashboard() {
   }, []);
 
   // --- ORIGINAL ENGINE (Untouched) ---
-  const handleComputeRisk = async () => {
-    try {
-      const metrics = {
-        tvl_change_24h: -0.05,
-        tvl_change_7d: -0.12,
-        liquidity_depth: 1000000,
-        utilization_ratio: 0.65,
-        oracle_price_std: 0.08,
-        liquidation_spike_ratio: 1.3,
-        protocol_age_days: 600,
-        audit_count: 3,
-        wallet_address: wallet,
-        wallet_balance: balance
-      };
-
-      const result = await computeRisk(1, metrics);
-      setRiskResult(result);
-      
-      // Navigate to market page smoothly
-      setTimeout(() => {
-        navigate('/market');
-      }, 1500);
-    } catch (error) {
-      console.error("Risk computation failed:", error);
-    }
+  const handleComputeRisk = () => {
+    // Navigate directly to the Risk Prediction page without running in background
+    navigate('/predict');
   };
 
   const handleDeposit = async () => {
@@ -113,7 +91,7 @@ export default function Dashboard() {
       <Header />
 
       <main className="max-w-7xl mx-auto px-6 py-10">
-        
+
         {/* FEATURE 4: Dynamic Greeting inside Top Action Bar */}
         <div className="flex justify-between items-end mb-10">
           <div>
@@ -134,7 +112,7 @@ export default function Dashboard() {
 
         {/* 3-Column Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          
+
           {/* FEATURE 2: Micro-Chart (Sparkline) added to Active Balance */}
           <div className="relative overflow-hidden p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-violet-500/50 transition-all group z-0">
             <div className="relative z-10">
@@ -203,7 +181,7 @@ export default function Dashboard() {
         <div className="bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 border border-white/10 rounded-[40px] p-10 flex flex-col items-center text-center relative overflow-hidden">
           {/* Subtle background glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-          
+
           <div className="relative z-10 flex flex-col items-center">
             <div className="h-16 w-16 bg-violet-500/20 rounded-full flex items-center justify-center mb-6 border border-violet-500/30">
               <svg className="w-8 h-8 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>

@@ -1,5 +1,5 @@
 from .rules import apply_hard_rules
-from .model import predict_probability
+from .model import predict_probabilities
 from risk_engine.models import RiskSnapshot
 from .features import compute_protocol_age_days
 
@@ -31,7 +31,9 @@ def compute_and_store_risk(protocol, features):
 
     flags = apply_hard_rules(features)
 
-    prob = predict_probability(features)
+    scores_data = predict_probabilities(features)
+    prob = scores_data.get("aggregate_score", 0.0)
+    individual_scores = scores_data.get("individual_scores", {})
 
     score = round(prob * 10, 2)
 
@@ -51,5 +53,6 @@ def compute_and_store_risk(protocol, features):
     return {
         "risk_score": score,
         "level": level,
-        "flags": flags
+        "flags": flags,
+        "individual_model_scores": individual_scores
     }

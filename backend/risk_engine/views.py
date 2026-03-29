@@ -58,13 +58,22 @@ class ProtocolRiskView(APIView):
         # Get user details for LLM context (passed from frontend)
         user_wallet = request.data.get("wallet_address", "Unknown Wallet")
         user_balance = request.data.get("wallet_balance", "Unknown")
+        user_risk_tolerance = request.data.get("risk_tolerance", "medium")
+        user_investment_goal = request.data.get("investment_goal", "Unknown")
+
+        from .services.vector_db import get_similar_contexts
+        chromadb_context_docs = get_similar_contexts(protocol.name, n_results=3)
+        chromadb_context = "\\n".join(chromadb_context_docs) if chromadb_context_docs else "No historical context available."
         
         # Generate LLM explanation using features, model output, and user data
         explanation = generate_risk_explanation(
             model_features=features,
             risk_result=result,
             user_wallet_address=user_wallet,
-            user_balance=user_balance
+            user_balance=user_balance,
+            user_risk_tolerance=user_risk_tolerance,
+            user_investment_goal=user_investment_goal,
+            chromadb_context=chromadb_context
         )
         
         return Response({
@@ -72,5 +81,55 @@ class ProtocolRiskView(APIView):
             **result,
             "llm_explanation": explanation
         }, status = status.HTTP_200_OK)
+
+class BestProtocolView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        user_wallet = request.data.get("wallet_address", "Unknown Wallet")
+        user_balance = request.data.get("wallet_balance", "Unknown")
+        user_risk_tolerance = request.data.get("risk_tolerance", "medium")
+        user_investment_goal = request.data.get("investment_goal", "Unknown")
+
+        from defi.models import Protocol
+        from .models import RiskSnapshot
         
+        protocols = Protocol.objects.all()
+        protocol_scores = {}
         
+        for p in protocols:
+            snap = RiskSnapshot.objects.filter(protocol=p).order_by('-created_at').first()
+            if snap:
+                protocol_scores[p.name] = {
+                    "score": snap.score,
+                    "level": snap.level
+                }
+                
+        from .services.vector_db import get_similar_contexts
+        chromadb_context_docs = get_similar_contexts("market overview stable liquidity", n_results=5)
+        chromadb_context = "\\n".join(chromadb_context_docs) if chromadb_context_docs else "No historical context available."
+        
+        from .services.llm import generate_best_protocol_explanation
+        explanation = generate_best_protocol_explanation(
+            protocol_scores=protocol_scores,
+            user_wallet_address=user_wallet,
+            user_balance=user_balance,
+            user_risk_tolerance=user_risk_tolerance,
+            user_investment_goal=user_investment_goal,
+            chromadb_context=chromadb_context
+        )
+        
+        best_p = "Unknown"
+        best_score = float('inf')
+        for name, data in protocol_scores.items():
+            if data["score"] < best_score:
+                best_score = data["score"]
+                best_p = name
+                
+        return Response({
+            "recommended_protocol": best_p,
+            "best_score": best_score if best_score != float('inf') else 0,
+            "llm_explanation": explanation,
+            "all_scores": protocol_scores
+        }, status=status.HTTP_200_OK)

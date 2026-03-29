@@ -1,53 +1,86 @@
 import os
+import joblib
+import pandas as pd
 
-# TODO: Define the path to your actual model file (e.g., 'model.pkl' or 'model.pt')
-MODEL_PATH = os.path.join(os.path.dirname(__file__), 'model.pkl')
-_model_instance = None
+MODELS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "ml_assets", "models")
+_model_instances = []
 
-def load_model():
+def load_models():
     """
-    Loads the ML model from disk.
-    For a .pkl file (scikit-learn/xgboost), use joblib or pickle:
-        import joblib
-        return joblib.load(MODEL_PATH)
+    Loads all ML models from the ml_assets/models directory.
+    Uses joblib to load .pkl files.
+    """
+    global _model_instances
+    if not _model_instances:
+        if os.path.exists(MODELS_DIR):
+            for file in os.listdir(MODELS_DIR):
+                if file.endswith('.pkl'):
+                    model_path = os.path.join(MODELS_DIR, file)
+                    try:
+                        model = joblib.load(model_path)
+                        _model_instances.append({"name": file, "model": model})
+                        print(f"Loaded model: {file}")
+                    except Exception as e:
+                        print(f"Error loading model {file}: {e}")
+    return _model_instances
+
+def predict_probabilities(features):
+    """
+    Predict risk probability using all loaded ML models.
+    Returns individual scores and an aggregated (average) score.
+    """
+    models = load_models()
+    
+    # 1. Base fallback if no models are found (e.g., user hasn't copied them yet)
+    if not models:
+        score = 0
+        tvl24 = features.get("tvl_change_24h", 0)
+        if tvl24 < -0.05: score += 0.2
+        mock_score = min(max(score, 0), 1.0)
+        return {
+            "aggregate_score": mock_score,
+            "individual_scores": {"mock_model": mock_score}
+        }
         
-    For a .pt file (PyTorch), use torch:
-        import torch
-        return torch.load(MODEL_PATH)
-    """
-    global _model_instance
-    if _model_instance is None:
-        pass # Implement actual model loading here
-        # print("Loading ML Model...")
-        # _model_instance = joblib.load(MODEL_PATH)
-    return _model_instance
-
-def predict_probability(features):
-    """
-    Predict risk probability using the loaded ML model.
-    """
-    model = load_model()
+    # 2. Structure features into a DataFrame as expected by most sklearn/xgboost models
+    input_df = pd.DataFrame([features])
     
-    # 1. Structure the features into the format expected by the model
-    # Example for scikit-learn (needs a 2D array/DataFrame):
-    # import numpy as np
-    # input_data = np.array([[
-    #     features.get("tvl_change_24h", 0),
-    #     features.get("tvl_change_7d", 0),
-    #     features.get("liquidity_depth", 0),
-    #     features.get("utilization_ratio", 0),
-    #     features.get("oracle_price_std", 0),
-    #     features.get("liquidation_spike_ratio", 0)
-    # ]])
+    individual_scores = {}
+    total_score = 0
     
-    # 2. Perform inference
-    # Example: score = model.predict_proba(input_data)[0][1]
+    # 3. Perform inference across all 10 models
+    for item in models:
+        model_name = item["name"]
+        model = item["model"]
+        try:
+            if hasattr(model, "predict_proba"):
+                # Assuming index 1 is the positive/risk class for binary classification
+                score = model.predict_proba(input_df)[0][1]
+            elif hasattr(model, "predict"):
+                # For regression models predicting a probability/score directly
+                score = model.predict(input_df)[0]
+            else:
+                score = 0
+                
+            score = float(score)
+            score = min(max(score, 0.0), 1.0) # Clamp between 0 and 1
+            
+            individual_scores[model_name] = round(score, 4)
+            total_score += score
+        except Exception as e:
+            print(f"Error running inference on {model_name}: {e}")
+            
+    if not individual_scores:
+        return {
+            "aggregate_score": 0.5, # Safe fallback
+            "individual_scores": {}
+        }
+            
+    # 4. Aggregate output (Average)
+    aggregate_score = total_score / len(individual_scores)
     
-    # --- For now, returning a mock score until the actual model is loaded ---
-    score = 0
-    tvl24 = features.get("tvl_change_24h", 0)
-    if tvl24 < -0.05: score += 0.2
-    
-    return min(max(score, 0), 1.0)
-
+    return {
+        "aggregate_score": round(aggregate_score, 4),
+        "individual_scores": individual_scores
+    }
 

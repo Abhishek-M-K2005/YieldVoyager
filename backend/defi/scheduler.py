@@ -22,8 +22,14 @@ def fetch_defillama_data():
             
         data = response.json()
         
-        # We'll just take the top 10 for demonstration to keep it fast and light
-        top_protocols = data[:10]
+        target_slugs = [
+            "aave", "curve-dex", "makerdao", "compound-finance", "lido", "uniswap",
+            "binance", "aave-v3", "bitfinex", "bybit", "ssv-network", "okx",
+            "robinhood", "eigencloud", "wbtc", "testprotocol"
+        ]
+        
+        # Filter the massive API payload perfectly to your specific protocols
+        top_protocols = [p for p in data if p.get('slug', '').lower() in target_slugs]
         
         for p_data in top_protocols:
             name = p_data.get('name')
@@ -37,37 +43,48 @@ def fetch_defillama_data():
                 defaults={'chain': chain, 'website': url, 'risk_level': 'medium'}
             )
             
+            import random
+            random_apy = round(random.uniform(2.5, 14.5), 2)
+            asset_strat = 'USD' if random.random() > 0.4 else 'ETH'
+            
             # Since DeFiLlama /protocols endpoint doesn't give APYs per vault easily,
             # we'll create a default vault or update the main one based on TVL,
-            # with a mock APY for demonstration logic
+            # with a slightly dynamic APY for demonstration logic
             vault, v_created = Vault.objects.get_or_create(
                 protocol=protocol,
-                asset='USD',
-                defaults={'apy': 5.0, 'tvl': tvl}
+                asset=asset_strat,
+                defaults={'apy': random_apy, 'tvl': tvl}
             )
             
-            # If not newly created, update TVL
+            # If not newly created, update TVL & APY dynamically
             if not v_created:
                 vault.tvl = tvl
-                # Randomize APY slightly or fetch from actual yield endpoint if needed
+                # Randomize APY slightly to simulate live active market fluctuations
+                vault.apy = random_apy
+                vault.asset = asset_strat
                 vault.save()
                 
             # Here we could call risk_engine's update for ML scoring instantly
             from risk_engine.services.scoring import compute_and_store_risk
             
-            # Mock features derived from DeFiLlama data
+            # Mock features derived from DeFiLlama data to match extraction script columns exactly
             features = {
                 "tvl_change_24h": p_data.get('change_1d', 0) / 100.0 if p_data.get('change_1d') else 0.0,
                 "tvl_change_7d": p_data.get('change_7d', 0) / 100.0 if p_data.get('change_7d') else 0.0,
                 "liquidity_depth": tvl,
-                "utilization_ratio": 0.5, # Mock
+                "utilisation_ratio": 0.5, # Mock
                 "oracle_price_std": 0.02, # Mock
                 "liquidation_spike_ratio": 1.0, # Mock
                 "protocol_age_days": 365, # Mock
+                "audit_count": 3 # Mock
             }
             
             try:
                 result = compute_and_store_risk(protocol, features)
+                
+                # Persist the output back natively to PosgreSQL for immediate frontend reads
+                protocol.risk_level = result.get("level", "Medium")
+                protocol.save()
                 
                 # Store this freshly calculated context into ChromaDB for LLM retrieval
                 from risk_engine.services.vector_db import store_protocol_context
