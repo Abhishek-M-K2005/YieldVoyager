@@ -1,0 +1,163 @@
+@reference "../index.css";
+.risk-page {
+  @apply min-h-screen bg-[#0e0e0e] text-[#e5e2e1];
+}
+
+.risk-main-shell {
+  @apply mx-auto max-w-7xl px-6 pb-32 pt-24;
+}
+.risk-container {
+  @apply min-h-screen bg-[#0f172a] text-white;
+}
+
+.risk-main {
+  @apply max-w-7xl mx-auto px-6 py-10;
+}
+
+.risk-header-wrapper {
+  @apply flex justify-between items-center mb-8;
+}
+
+.risk-kicker {
+  @apply mb-2 text-[#ffe2ab] text-[0.75rem] uppercase tracking-[0.2em];
+}
+
+.risk-title {
+  @apply text-5xl md:text-6xl font-light tracking-tight text-[#e5e2e1];
+}
+
+.risk-title span {
+  @apply text-[#ffb77d] font-bold;
+}
+
+.risk-subtitle {
+  @apply text-gray-400;
+}
+
+.risk-grid {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-8;
+}
+
+.input-section {
+  @apply lg:col-span-1 bg-gray-800 rounded-xl p-6 border border-gray-700 h-fit;
+}
+
+.risk-input-panel {
+  @apply relative overflow-hidden rounded-2xl p-8;
+}
+
+.input-title {
+  @apply text-xl font-semibold text-gray-100 mb-6 flex items-center gap-2;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-400 mb-2;
+}
+
+.form-select {
+  @apply w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.context-box {
+  @apply bg-gray-900 rounded-lg p-4 border border-gray-700;
+}
+
+.context-row {
+  @apply flex justify-between text-sm;
+}
+
+.submit-btn {
+  @apply w-full py-3 px-4 rounded-lg font-semibold text-white transition-colors duration-200 flex items-center justify-center gap-2;
+}
+
+.loading-state {
+  @apply bg-blue-600/50 cursor-not-allowed;
+}
+
+.active-state {
+  @apply bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-lg shadow-blue-900/20;
+}
+
+.spinner-icon {
+  @apply w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin;
+}
+
+.error-box {
+  @apply p-4 bg-red-900/30 border border-red-800 rounded-lg flex items-start gap-3 text-red-200 text-sm;
+}
+
+.results-section {
+  @apply lg:col-span-2 space-y-6;
+}
+
+.empty-results-box {
+  @apply bg-gray-800/50 border border-gray-700 border-dashed rounded-xl h-96 flex flex-col items-center justify-center text-gray-500;
+}
+
+.empty-results-icon {
+  @apply w-16 h-16 mb-4 opacity-20;
+}
+
+.results-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6;
+}
+
+.score-card {
+  @apply md:col-span-2 bg-gray-800 rounded-xl p-6 border border-gray-700 relative overflow-hidden;
+}
+
+.score-shield-bg {
+  @apply absolute top-0 right-0 p-4 opacity-10;
+}
+
+.score-display {
+  @apply flex items-baseline gap-4 mb-4;
+}
+
+.score-value {
+  @apply text-5xl font-bold;
+}
+
+.score-badge {
+  @apply px-3 py-1 rounded-full text-sm font-medium uppercase tracking-wider;
+}
+
+.radar-chart-container {
+  @apply h-64 mt-4;
+}
+
+.factors-card {
+  @apply bg-gray-800 rounded-xl p-6 border border-gray-700 flex flex-col gap-4;
+}
+
+.factor-item {
+  @apply flex items-center gap-3 text-sm text-gray-300 bg-gray-900/50 p-3 rounded-lg;
+}
+
+.factor-dot {
+  @apply w-2 h-2 rounded-full;
+}
+
+.llm-card {
+  @apply bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-blue-900/30 shadow-lg;
+}
+
+.llm-header-wrapper {
+  @apply flex items-center gap-3 mb-6;
+}
+
+.llm-icon-bg {
+  @apply p-2 bg-blue-500/10 rounded-lg;
+}
+
+.llm-title {
+  @apply text-xl font-bold text-gray-100;
+}
+
+.llm-paragraph {
+  @apply text-gray-300 leading-relaxed whitespace-pre-wrap;
+}
+
+.llm-footer {
+  @apply mt-6 pt-6 border-t border-gray-700/50 text-xs text-gray-500 flex justify-between items-center;
+}

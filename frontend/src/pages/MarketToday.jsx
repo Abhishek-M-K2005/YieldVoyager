@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/Header';
 import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   AreaChart, Area
 } from 'recharts';
-import { TrendingUp, DollarSign, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, DollarSign, Activity, ArrowUpRight } from 'lucide-react';
+import AppNavbar from '../components/AppNavbar';
+import '../styles/MarketToday.css';
 
 export default function MarketToday() {
   const [marketData, setMarketData] = useState([]);
@@ -15,27 +16,19 @@ export default function MarketToday() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Fetch Global TVL History from DeFiLlama
         const tvlRes = await fetch("https://api.llama.fi/v2/historicalChainTvl");
         const tvlData = await tvlRes.json();
         
-        // Format data for chart (last 30 days for cleaner view)
         const formattedTvl = tvlData.slice(-30).map(item => ({
           date: new Date(item.date * 1000).toLocaleDateString(undefined, {month:'short', day:'numeric'}),
-          tvl: (item.tvl / 1e9).toFixed(2) // Convert to Billions
+          tvl: (item.tvl / 1e9).toFixed(2) 
         }));
         setMarketData(formattedTvl);
 
-        // 2. Fetch Top Chains
         const chainsRes = await fetch("https://api.llama.fi/v2/chains");
         const chainsData = await chainsRes.json();
-        setTopChains(chainsData.slice(0, 5)); // Top 5 chains
+        setTopChains(chainsData.slice(0, 5)); 
 
-        // 3. Fetch Yield Vaults (Backend)
-        // const vaultsRes = await fetch("http://localhost:8000/api/defi/vaults/");
-        // const vaultsData = await vaultsRes.json();
-        // setVaults(vaultsData); 
-        // Mocking for now as backend might be empty
         setVaults([
             { protocol: "Aave", asset: "USDC", apy: 4.5, tvl: "1.2B" },
             { protocol: "Curve", asset: "3pool", apy: 2.1, tvl: "400M" },
@@ -56,83 +49,121 @@ export default function MarketToday() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
-      <Header />
-      
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        <h1 className="text-3xl font-bold mb-2">Market Overview</h1>
-        <p className="text-gray-400 mb-8">Real-time DeFi insights powered by DeFiLlama.</p>
+    <div className="market-page">
+      <AppNavbar />
 
-        {/* Key Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-           <div className="bg-white/5 border border-white/10 p-6 rounded-2xl backdrop-blur-lg">
-             <div className="flex justify-between items-start mb-4">
+      <main className="market-main-shell">
+        <section className="mb-16 grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
+          <div className="lg:col-span-8">
+            <label className="market-kicker">Ecosystem Status</label>
+            <h1 className="market-title-hero">Market Today</h1>
+            <div className="market-hero-chart solar-glow">
+              <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-between p-6">
+                <div>
+                  <p className="font-label text-[10px] uppercase tracking-widest text-zinc-500">30D TVL Trend</p>
+                  <p className="mt-1 text-3xl font-headline font-bold">$12.84B</p>
+                </div>
+                <span className="w-fit rounded-full bg-primary/10 px-3 py-1 font-label text-[10px] font-bold text-primary">+12.4%</span>
+              </div>
+
+              <div className="absolute inset-x-0 bottom-0 h-[70%]">
+                <svg className="h-full w-full" preserveAspectRatio="none" viewBox="0 0 1000 300">
+                  <defs>
+                    <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="#ff8c00" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#ff8c00" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,280 Q100,250 200,270 T400,220 T600,240 T800,150 T1000,100 L1000,300 L0,300 Z" fill="url(#chartFill)" />
+                  <path d="M0,280 Q100,250 200,270 T400,220 T600,240 T800,150 T1000,100" fill="none" stroke="#ff8c00" strokeWidth="3" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4 lg:col-span-4">
+            <div className="rounded-xl border-l-2 border-secondary bg-surface-container-high p-6">
+              <p className="mb-1 font-label text-[10px] uppercase tracking-widest text-secondary">24h Volume</p>
+              <p className="text-3xl font-headline font-medium">$842.1M</p>
+            </div>
+            <div className="rounded-xl border-l-2 border-outline-variant bg-surface-container-high p-6">
+              <p className="mb-1 font-label text-[10px] uppercase tracking-widest text-zinc-500">Top Chain</p>
+              <p className="text-3xl font-headline font-medium">Ethereum</p>
+            </div>
+            <div className="rounded-xl border-l-2 border-primary bg-surface-container-high p-6">
+              <p className="mb-1 font-label text-[10px] uppercase tracking-widest text-primary">Active Vaults</p>
+              <p className="text-3xl font-headline font-medium">1,204</p>
+            </div>
+          </div>
+        </section>
+
+        <div className="metric-grid">
+           <div className="metric-card">
+             <div className="metric-card-header">
                <div>
-                 <p className="text-gray-400 text-sm">Total Value Locked</p>
-                 <h3 className="text-2xl font-bold mt-1">$84.2B</h3>
+                 <p className="metric-label">Total Value Locked</p>
+                 <h3 className="metric-value">$84.2B</h3>
                </div>
-               <div className="p-2 bg-green-500/20 rounded-lg text-green-400">
+               <div className="metric-icon-bg bg-green-500/20 text-green-400">
                  <DollarSign size={20} />
                </div>
              </div>
-             <div className="flex items-center text-sm text-green-400">
+             <div className="metric-footer text-green-400">
                <ArrowUpRight size={16} className="mr-1" />
                <span>+2.4% (24h)</span>
              </div>
            </div>
 
-           <div className="bg-white/5 border border-white/10 p-6 rounded-2xl backdrop-blur-lg">
-             <div className="flex justify-between items-start mb-4">
+           <div className="metric-card">
+             <div className="metric-card-header">
                <div>
-                 <p className="text-gray-400 text-sm">24h Volume</p>
-                 <h3 className="text-2xl font-bold mt-1">$3.1B</h3>
+                 <p className="metric-label">24h Volume</p>
+                 <h3 className="metric-value">$3.1B</h3>
                </div>
-               <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400">
+               <div className="metric-icon-bg bg-blue-500/20 text-blue-400">
                  <Activity size={20} />
                </div>
              </div>
-             <div className="flex items-center text-sm text-gray-400">
+             <div className="metric-footer text-gray-400">
                <span>Across all chains</span>
              </div>
            </div>
 
-           <div className="bg-white/5 border border-white/10 p-6 rounded-2xl backdrop-blur-lg">
-             <div className="flex justify-between items-start mb-4">
+           <div className="metric-card">
+             <div className="metric-card-header">
                <div>
-                 <p className="text-gray-400 text-sm">Top Chain</p>
-                 <h3 className="text-2xl font-bold mt-1">Ethereum</h3>
+                 <p className="metric-label">Top Chain</p>
+                 <h3 className="metric-value">Ethereum</h3>
                </div>
-               <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400">
+               <div className="metric-icon-bg bg-purple-500/20 text-purple-400">
                  <TrendingUp size={20} />
                </div>
              </div>
-             <div className="flex items-center text-sm text-purple-400">
+             <div className="metric-footer text-purple-400">
                <span>58% Dominance</span>
              </div>
            </div>
 
-           <div className="bg-white/5 border border-white/10 p-6 rounded-2xl backdrop-blur-lg">
-             <div className="flex justify-between items-start mb-4">
+           <div className="metric-card">
+             <div className="metric-card-header">
                <div>
-                 <p className="text-gray-400 text-sm">Active Protocols</p>
-                 <h3 className="text-2xl font-bold mt-1">3,421</h3>
+                 <p className="metric-label">Active Protocols</p>
+                 <h3 className="metric-value">3,421</h3>
                </div>
-               <div className="p-2 bg-orange-500/20 rounded-lg text-orange-400">
+               <div className="metric-icon-bg bg-orange-500/20 text-orange-400">
                  <Activity size={20} />
                </div>
              </div>
-             <div className="flex items-center text-sm text-gray-400">
+             <div className="metric-footer text-gray-400">
                <span>Tracked live</span>
              </div>
            </div>
         </div>
 
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          {/* Main Chart: TVL Trend */}
-          <div className="lg:col-span-2 bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-lg">
-            <h3 className="text-xl font-bold mb-6">Total Value Locked (30 Days)</h3>
-            <div className="h-[300px] w-full">
+        <div className="charts-grid">
+          <div className="chart-wrapper lg:col-span-2">
+            <h3 className="chart-title">Total Value Locked (30 Days)</h3>
+            <div className="chart-container">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={marketData}>
                   <defs>
@@ -154,12 +185,11 @@ export default function MarketToday() {
             </div>
           </div>
 
-          {/* Top Chains List */}
-          <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-lg">
-            <h3 className="text-xl font-bold mb-6">Top Chains by TVL</h3>
-            <div className="space-y-4">
+          <div className="chart-wrapper">
+            <h3 className="chart-title">Top Chains by TVL</h3>
+            <div className="chains-list">
               {topChains.map((chain, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 hover:bg-white/5 rounded-xl transition-colors">
+                <div key={idx} className="chain-item">
                   <div className="flex items-center gap-3">
                     <span className="text-gray-500 font-mono text-sm">#{idx + 1}</span>
                     <span className="font-medium">{chain.name}</span>
@@ -173,28 +203,38 @@ export default function MarketToday() {
           </div>
         </div>
 
-        {/* Top Yield Opportunities */}
-        <h2 className="text-2xl font-bold mb-6">Top Yield Opportunities</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <h2 className="mb-6 text-2xl font-headline font-bold text-primary">Top Yield Opportunities</h2>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {vaults.map((vault, index) => (
-            <div key={index} className="bg-white/5 border border-white/10 p-6 rounded-2xl hover:border-violet-500/50 transition-all cursor-pointer group">
-              <div className="flex justify-between items-start mb-4">
-                <div className="h-10 w-10 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center font-bold text-xs">
+            <div key={index} className="vault-card group">
+              <div className="vault-card-header">
+                <div className="vault-icon">
                     {vault.protocol.substring(0,2)}
                 </div>
-                <div className="bg-green-500/10 text-green-400 px-2 py-1 rounded text-xs font-bold">
+                <div className="vault-apy">
                   {vault.apy}% APY
                 </div>
               </div>
-              <h3 className="font-bold text-lg mb-1 group-hover:text-violet-400 transition-colors">{vault.protocol}</h3>
-              <p className="text-gray-400 text-sm mb-4">{vault.asset} Strategy</p>
+              <h3 className="vault-name">{vault.protocol}</h3>
+              <p className="vault-strategy">{vault.asset} Strategy</p>
               
-              <div className="flex justify-between text-xs text-gray-500 border-t border-white/5 pt-4">
+              <div className="vault-footer">
                 <span>TVL: {vault.tvl}</span>
                 <span>Risk: Low</span>
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="market-command-hud glass-card">
+          <div>
+            <h3>Voyager Alpha Channel</h3>
+            <p>Receive real-time notifications when high-yield vaults are deployed or volatility exceeds your threshold.</p>
+          </div>
+          <div>
+            <button className="secondary">Learn More</button>
+            <button className="primary">Enable Alerts</button>
+          </div>
         </div>
 
       </main>

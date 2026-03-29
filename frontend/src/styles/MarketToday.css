@@ -1,0 +1,156 @@
+@reference "../index.css";
+
+.market-page {
+  @apply min-h-screen bg-[#131313] text-[#e5e2e1];
+}
+
+.market-main-shell {
+  @apply mx-auto max-w-7xl px-6 pb-32 pt-24 md:px-12 lg:px-24;
+}
+
+.market-kicker {
+  @apply mb-4 block text-xs uppercase tracking-[0.3em] text-[#ffb77d];
+}
+
+.market-title-hero {
+  @apply mb-8 text-5xl font-light leading-none tracking-tight md:text-7xl;
+}
+
+.market-hero-chart {
+  @apply relative h-[350px] w-full overflow-hidden rounded-xl border-l-2 border-[#ffb77d] bg-[#0e0e0e];
+}
+.market-container {
+  @apply min-h-screen bg-[#0f172a] text-white;
+}
+
+.market-main {
+  @apply max-w-7xl mx-auto px-6 py-12;
+}
+
+.market-title {
+  @apply text-3xl font-bold mb-2;
+}
+
+.market-subtitle {
+  @apply text-gray-400 mb-8;
+}
+
+.metric-grid {
+  @apply grid grid-cols-1 md:grid-cols-4 gap-6 mb-12;
+}
+
+.metric-card {
+  @apply bg-white/5 border border-white/10 p-6 rounded-2xl backdrop-blur-lg;
+}
+
+.metric-card-header {
+  @apply flex justify-between items-start mb-4;
+}
+
+.metric-label {
+  @apply text-gray-400 text-sm;
+}
+
+.metric-value {
+  @apply text-2xl font-bold mt-1;
+}
+
+.metric-icon-bg {
+  @apply p-2 rounded-lg;
+}
+
+.metric-footer {
+  @apply flex items-center text-sm;
+}
+
+.charts-grid {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12;
+}
+
+.chart-wrapper {
+  @apply bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-lg;
+}
+
+.chart-title {
+  @apply text-xl font-bold mb-6;
+}
+
+.chart-container {
+  @apply h-[300px] w-full;
+}
+
+.chains-list {
+  @apply space-y-4;
+}
+
+.chain-item {
+  @apply flex items-center justify-between p-3 hover:bg-white/5 rounded-xl transition-colors;
+}
+
+.vaults-title {
+  @apply text-2xl font-bold mb-6;
+}
+
+.vaults-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+}
+
+.vault-card {
+  @apply bg-white/5 border border-white/10 p-6 rounded-2xl hover:border-violet-500/50 transition-all cursor-pointer;
+}
+
+.vault-card-header {
+  @apply flex justify-between items-start mb-4;
+}
+
+.vault-icon {
+  @apply h-10 w-10 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center font-bold text-xs;
+}
+
+.vault-apy {
+  @apply bg-green-500/10 text-green-400 px-2 py-1 rounded text-xs font-bold;
+}
+
+.vault-name {
+  @apply font-bold text-lg mb-1 transition-colors;
+}
+
+.vault-card:hover .vault-name {
+  color: #a78bfa;
+}
+
+.vault-strategy {
+  @apply text-gray-400 text-sm mb-4;
+}
+
+.vault-footer {
+  @apply flex justify-between text-xs text-gray-500 border-t border-white/5 pt-4;
+}
+
+.market-command-hud {
+  @apply mt-20 flex flex-col items-center justify-between gap-8 overflow-hidden rounded-2xl border-l-4 border-[#ffb77d] p-8 md:flex-row;
+}
+
+.market-command-hud h3 {
+  @apply mb-2 text-2xl font-bold;
+}
+
+.market-command-hud p {
+  @apply max-w-xl text-zinc-400;
+}
+
+.market-command-hud > div:last-child {
+  @apply flex w-full gap-4 md:w-auto;
+}
+
+.market-command-hud button {
+  @apply flex-1 rounded-lg px-8 py-3 text-xs uppercase tracking-widest transition-all md:flex-none;
+}
+
+.market-command-hud button.secondary {
+  @apply border border-[#564334]/30 bg-[#353534] text-[#e5e2e1] hover:bg-[#2a2a2a];
+}
+
+.market-command-hud button.primary {
+  @apply rounded-lg bg-[#ff8c00] text-[#623200] shadow-lg hover:scale-105 active:scale-95;
+}

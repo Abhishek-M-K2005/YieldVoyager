@@ -1,0 +1,52 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  darkMode: "class",
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        "surface-container-lowest": "#0e0e0e",
+        "surface-container-low": "#1c1b1b",
+        "surface-container": "#201f1f",
+        "surface-container-high": "#2a2a2a",
+        "surface-container-highest": "#353534",
+        "surface": "#131313",
+        "surface-variant": "#353534",
+        "surface-bright": "#3a3939",
+        "surface-dim": "#131313",
+        "surface-tint": "#ffb77d",
+        "primary": "#ffb77d",
+        "primary-container": "#ff8c00",
+        "on-primary": "#4d2600",
+        "on-primary-container": "#623200",
+        "secondary": "#ffe2ab",
+        "secondary-container": "#ffbf00",
+        "on-secondary": "#402d00",
+        "on-secondary-container": "#6d5000",
+        "tertiary": "#85cfff",
+        "tertiary-container": "#00b5fc",
+        "on-tertiary": "#00344c",
+        "on-tertiary-container": "#004360",
+        "error": "#ffb4ab",
+        "error-container": "#93000a",
+        "on-error": "#690005",
+        "on-error-container": "#ffdad6",
+        "background": "#131313",
+        "on-background": "#e5e2e1",
+        "on-surface": "#e5e2e1",
+        "on-surface-variant": "#ddc1ae",
+        "outline": "#a48c7a",
+        "outline-variant": "#564334",
+      },
+      fontFamily: {
+        "headline": ["Manrope", "sans-serif"],
+        "body": ["Manrope", "sans-serif"],
+        "label": ["Space Grotesk", "sans-serif"]
+      },
+    },
+  },
+  plugins: [],
+}

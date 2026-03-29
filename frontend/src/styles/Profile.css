@@ -1,0 +1,269 @@
+@reference "../index.css";
+
+.profile-page {
+  @apply min-h-screen bg-[#0e0e0e] text-[#e5e2e1];
+}
+
+.profile-main-shell {
+  @apply mx-auto max-w-7xl space-y-8 px-6 pb-24 pt-28;
+}
+
+.profile-hero {
+  @apply flex flex-col justify-between gap-8 rounded-2xl p-8 md:flex-row md:items-end;
+}
+
+.profile-hero-kicker {
+  @apply text-[0.75rem] uppercase tracking-[0.2em] text-[#a48c7a];
+}
+
+.profile-hero-value-wrap {
+  @apply mt-3 flex items-baseline gap-4;
+}
+
+.profile-hero-value {
+  @apply text-6xl font-extralight tracking-tighter text-[#e5e2e1];
+}
+
+.profile-hero-value.masked {
+  @apply text-zinc-500;
+}
+
+.profile-hero-chip {
+  @apply text-lg;
+}
+
+.profile-hero-sub {
+  @apply mt-3 text-sm text-zinc-400;
+}
+
+.profile-hero-actions {
+  @apply flex gap-4;
+}
+
+.profile-hero-actions button {
+  @apply rounded-lg px-6 py-3 font-bold transition-all;
+}
+
+.profile-hero-actions button:first-child {
+  @apply text-[#623200] hover:brightness-110;
+}
+
+.profile-hero-actions button:last-child {
+  @apply border border-[#564334]/15 bg-[#353534] hover:bg-[#353534];
+}
+
+.profile-grid {
+  @apply grid grid-cols-1 gap-6 md:grid-cols-12;
+}
+
+.profile-panel {
+  @apply rounded-2xl p-8;
+}
+
+.profile-panel-wide {
+  @apply md:col-span-8;
+}
+
+.profile-grid > aside.profile-panel {
+  @apply md:col-span-4;
+}
+
+.profile-panel-head {
+  @apply mb-8 flex justify-between items-start;
+}
+
+.profile-panel-head h3 {
+  @apply text-xl font-bold text-[#ffb77d];
+}
+
+.profile-panel-head p {
+  @apply mt-1 text-[0.7rem] uppercase tracking-widest text-zinc-500;
+}
+
+.profile-panel-head .material-symbols-outlined {
+  @apply text-[#a48c7a];
+}
+
+.profile-diversification-body {
+  @apply flex flex-col items-center gap-12 md:flex-row;
+}
+
+.profile-donut-wrap {
+  @apply relative h-64 w-64;
+}
+
+.profile-donut {
+  @apply h-full w-full -rotate-90;
+}
+
+.profile-donut-center {
+  @apply absolute inset-0 flex flex-col items-center justify-center;
+}
+
+.profile-donut-center span {
+  @apply text-[0.6rem] uppercase tracking-tighter text-[#a48c7a];
+}
+
+.profile-donut-center strong {
+  @apply text-3xl font-light;
+}
+
+.profile-holding-list {
+  @apply w-full space-y-3;
+}
+
+.profile-holding-row {
+  @apply rounded-xl border border-[#564334]/10 bg-[#1c1b1b] p-4;
+}
+
+.profile-holding-row > div {
+  @apply mb-2;
+}
+
+.profile-holding-row p {
+  @apply font-medium;
+}
+
+.profile-holding-row small {
+  @apply text-[10px] uppercase tracking-widest text-zinc-500;
+}
+
+.profile-holding-row strong {
+  @apply mb-2 block;
+}
+
+.profile-holding-progress {
+  @apply h-1 overflow-hidden rounded-full bg-zinc-800;
+}
+
+.profile-holding-progress > div {
+  @apply h-full;
+}
+
+.profile-panel > h3 {
+  @apply mb-6 text-xl font-bold;
+}
+
+.profile-setting-row {
+  @apply mb-7 flex items-center justify-between;
+}
+
+.profile-setting-row p {
+  @apply font-bold;
+}
+
+.profile-setting-row small {
+  @apply text-xs text-zinc-400;
+}
+
+.profile-toggle {
+  @apply relative h-6 w-12 rounded-full bg-zinc-700 transition-colors;
+}
+
+.profile-toggle span {
+  @apply absolute top-1 h-4 w-4 rounded-full bg-white transition-transform;
+}
+
+.profile-toggle span.off {
+  @apply translate-x-1;
+}
+
+.profile-toggle span.on {
+  @apply translate-x-7;
+}
+
+.profile-setting-block {
+  @apply mb-7;
+}
+
+.profile-setting-block > p {
+  @apply mb-3 font-bold;
+}
+
+.profile-currency-grid {
+  @apply grid grid-cols-3 gap-2 rounded-xl bg-black/30 p-1;
+}
+
+.profile-currency-grid button {
+  @apply rounded-lg py-2 text-sm font-bold text-zinc-400 transition-all hover:text-white;
+}
+
+.profile-currency-grid button.active {
+  @apply text-white;
+}
+
+.profile-theme-dots {
+  @apply flex gap-3;
+}
+
+.profile-theme-dots button {
+  @apply h-8 w-8 rounded-full opacity-60 transition-all hover:opacity-100;
+}
+
+.profile-theme-dots button.active {
+  @apply scale-110 ring-2 ring-white ring-offset-2 ring-offset-[#2a2a2a];
+}
+
+.profile-muted {
+  @apply mb-5 text-sm text-zinc-400;
+}
+
+.profile-address-form {
+  @apply mb-5 flex flex-col gap-3 md:flex-row;
+}
+
+.profile-address-form input {
+  @apply rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm focus:border-zinc-400 focus:outline-none;
+}
+
+.profile-address-form input:first-child {
+  @apply flex-1;
+}
+
+.profile-address-form input:nth-child(2) {
+  @apply flex-2;
+}
+
+.profile-address-form button {
+  @apply rounded-xl px-6 py-3 font-bold transition-all hover:opacity-90;
+}
+
+.profile-address-list {
+  @apply max-h-64 space-y-3 overflow-y-auto pr-2;
+}
+
+.profile-empty {
+  @apply py-4 text-center font-mono text-sm text-zinc-500;
+}
+
+.profile-address-row {
+  @apply flex items-center justify-between rounded-xl border border-white/10 bg-black/20 p-4;
+}
+
+.profile-address-row p {
+  @apply font-bold;
+}
+
+.profile-address-row small {
+  @apply mt-1 block font-mono text-xs text-zinc-500;
+}
+
+.profile-address-row button {
+  @apply rounded-lg p-2 text-zinc-500 transition-colors hover:text-red-400;
+}
+
+.profile-activity-list {
+  @apply space-y-4;
+}
+
+.profile-activity-list > div {
+  @apply rounded-xl border border-white/10 bg-black/20 p-4;
+}
+
+.profile-activity-list p {
+  @apply text-sm;
+}
+
+.profile-activity-list small {
+  @apply mt-1 block text-[11px] uppercase tracking-widest text-zinc-500;
+}

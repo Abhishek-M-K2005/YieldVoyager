@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile"; 
+import './styles/theme.css'
 
 // 1. Import your 3 new pages
 import MarketToday from "./pages/MarketToday";

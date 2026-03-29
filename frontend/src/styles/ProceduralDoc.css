@@ -1,0 +1,36 @@
+@reference "../index.css";
+.doc-page {
+  @apply min-h-screen bg-[#0d1117] text-[#c9d1d9];
+}
+
+.doc-main-shell {
+  @apply mx-auto w-full max-w-7xl flex-1 overflow-hidden p-8 md:p-12 lg:ml-72 lg:p-24;
+}
+
+.doc-sidebar {
+  @apply fixed left-0 top-20 hidden h-screen w-72 flex-col border-r border-[#353534]/20 bg-[#0e0e0e] lg:flex;
+}
+
+.doc-header-wrapper {
+  @apply mb-6 border-b border-[#30363d] pb-4;
+}
+
+.doc-title {
+  @apply text-2xl font-semibold text-white flex items-center gap-2;
+}
+
+.doc-file-box {
+  @apply border border-[#30363d] rounded-md bg-[#0d1117] overflow-hidden;
+}
+
+.doc-file-header {
+  @apply bg-[#161b22] px-4 py-3 border-b border-[#30363d] text-sm text-[#c9d1d9] flex items-center justify-between;
+}
+
+.doc-file-action {
+  @apply px-2 py-1 bg-[#21262d] border border-[#30363d] rounded text-xs font-semibold hover:text-[#58a6ff] hover:border-[#8b949e] cursor-pointer transition-colors;
+}
+
+.doc-markdown-content {
+  @apply p-8 md:p-12 prose prose-invert max-w-none prose-headings:border-b prose-headings:border-[#21262d] prose-headings:pb-2 prose-a:text-[#58a6ff] prose-a:no-underline hover:prose-a:underline prose-code:text-[#c9d1d9] prose-code:bg-[#161b22] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-pre:bg-[#161b22] prose-pre:border prose-pre:border-[#30363d] prose-blockquote:border-l-4 prose-blockquote:border-[#30363d] prose-blockquote:text-[#8b949e] prose-table:border-collapse prose-th:border prose-th:border-[#30363d] prose-th:p-2 prose-td:border prose-td:border-[#30363d] prose-td:p-2 text-[#c9d1d9];
+}

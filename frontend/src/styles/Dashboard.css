@@ -1,0 +1,213 @@
+@reference "../index.css";
+
+.dashboard-page {
+  @apply min-h-screen bg-[#0e0e0e] text-[#e5e2e1];
+}
+
+.dashboard-main {
+  @apply mx-auto max-w-7xl space-y-10 px-6 pb-20 pt-24 md:px-12 lg:px-24;
+}
+
+.dashboard-greeting-wrap {
+  @apply mt-8;
+}
+
+.dashboard-status {
+  @apply mb-2 text-xs uppercase tracking-[0.3em] text-[#ffe2ab];
+}
+
+.dashboard-greeting {
+  @apply text-4xl font-extralight tracking-tight md:text-5xl;
+}
+
+.dashboard-greeting span {
+  @apply font-bold text-[#ffb77d];
+}
+
+.dashboard-date {
+  @apply mt-2 text-sm text-zinc-500;
+}
+
+.dashboard-grid {
+  @apply grid grid-cols-1 gap-8 lg:grid-cols-12;
+}
+
+.dashboard-balance-card {
+  @apply relative overflow-hidden rounded-xl bg-[#1c1b1b] p-8 lg:col-span-8;
+}
+
+.dashboard-curve-wrap {
+  @apply pointer-events-none absolute top-0 right-0 h-full w-1/2 opacity-20;
+}
+
+.dashboard-curve {
+  @apply h-full w-full;
+}
+
+.dashboard-balance-head {
+  @apply mb-4 flex items-center gap-2;
+}
+
+.dashboard-balance-rail {
+  @apply h-8 w-2 bg-[#ffb77d];
+}
+
+.dashboard-balance-head span {
+  @apply text-sm uppercase tracking-widest text-[#ddc1ae];
+}
+
+.dashboard-balance-value {
+  @apply mb-12 flex items-end gap-4 text-6xl font-extralight tracking-tighter;
+}
+
+.dashboard-balance-value small {
+  @apply text-lg text-[#ffb77d];
+}
+
+.dashboard-balance-metrics {
+  @apply grid grid-cols-2 gap-6 border-t border-[#564334]/10 pt-8 md:grid-cols-4;
+}
+
+.dashboard-balance-metrics p {
+  @apply mb-1 text-[10px] uppercase text-zinc-500;
+}
+
+.dashboard-balance-metrics h4 {
+  @apply text-xl font-medium capitalize;
+}
+
+.dashboard-risk-card {
+  @apply flex flex-col justify-between rounded-xl border-l-2 border-[#ffb77d] p-8 lg:col-span-4;
+}
+
+.dashboard-chip {
+  @apply mb-6 block text-xs uppercase tracking-widest text-[#ffb77d];
+}
+
+.dashboard-risk-card p {
+  @apply mb-6 text-sm leading-relaxed text-[#ddc1ae];
+}
+
+.dashboard-risk-card button {
+  @apply w-full border border-[#564334]/15 bg-[#353534] py-4 text-xs uppercase tracking-widest transition-all hover:bg-zinc-800;
+}
+
+.dashboard-network-card {
+  @apply rounded-xl bg-[#1c1b1b] p-6 lg:col-span-4;
+}
+
+.dashboard-network-head {
+  @apply mb-4 flex items-start justify-between;
+}
+
+.dashboard-network-head h3 {
+  @apply text-xs uppercase tracking-widest text-[#ddc1ae];
+}
+
+.dashboard-network-head .material-symbols-outlined {
+  @apply text-[#ffe2ab];
+}
+
+.dashboard-network-rows {
+  @apply space-y-4;
+}
+
+.dashboard-network-rows div {
+  @apply flex items-center justify-between;
+}
+
+.dashboard-network-rows span {
+  @apply text-sm text-zinc-400;
+}
+
+.dashboard-network-rows strong {
+  @apply text-lg font-medium;
+}
+
+.dashboard-progress {
+  @apply mt-6 h-1 w-full overflow-hidden rounded-full bg-[#353534];
+}
+
+.dashboard-progress div {
+  @apply h-full w-4/5 bg-[#ffe2ab];
+}
+
+.dashboard-cta-card {
+  @apply flex flex-col items-center justify-between gap-8 rounded-xl border border-[#ffb77d]/10 bg-[#ff8c00]/10 p-8 md:flex-row lg:col-span-8;
+}
+
+.dashboard-cta-card h3 {
+  @apply text-2xl font-bold tracking-tight;
+}
+
+.dashboard-cta-card p {
+  @apply mt-2 max-w-md text-[#ddc1ae];
+}
+
+.dashboard-cta-buttons {
+  @apply flex w-full gap-4 md:w-auto;
+}
+
+.dashboard-cta-buttons button {
+  @apply flex-1 px-8 py-4 text-xs uppercase tracking-widest transition-all md:flex-none;
+}
+
+.dashboard-cta-buttons button.primary {
+  @apply bg-[#ff8c00] font-bold text-[#623200] hover:scale-105;
+}
+
+.dashboard-cta-buttons button.secondary {
+  @apply border border-[#ffb77d] text-[#ffb77d] hover:bg-[#ffb77d]/5;
+}
+
+.dashboard-telemetry {
+  @apply pb-12;
+}
+
+.dashboard-telemetry-head {
+  @apply mb-8 flex items-center gap-4;
+}
+
+.dashboard-telemetry-head h3 {
+  @apply text-lg font-light text-[#ffb77d];
+}
+
+.dashboard-telemetry-head div {
+  @apply h-px flex-1 bg-[#564334]/10;
+}
+
+.dashboard-telemetry-list {
+  @apply space-y-2;
+}
+
+.dashboard-telemetry-list > div {
+  @apply flex items-center justify-between rounded-lg border-l-2 border-transparent p-4 transition-all hover:border-[#ffb77d] hover:bg-zinc-800/40;
+  background: rgba(42, 42, 42, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 183, 125, 0.1);
+}
+
+.dashboard-telemetry-list > div > div {
+  @apply flex items-center gap-4;
+}
+
+.dashboard-telemetry-list .material-symbols-outlined {
+  @apply text-zinc-500;
+}
+
+.dashboard-telemetry-list p {
+  @apply text-sm font-medium;
+}
+
+.dashboard-telemetry-list small {
+  @apply text-[10px] text-zinc-500;
+}
+
+.dashboard-blob-left {
+  @apply fixed top-1/4 -left-20 h-64 w-64 rounded-full bg-[#ffb77d]/10 blur-[120px] pointer-events-none;
+}
+
+.dashboard-blob-right {
+  @apply fixed bottom-1/4 -right-20 h-96 w-96 rounded-full bg-[#ffe2ab]/5 blur-[150px] pointer-events-none;
+}

@@ -1,0 +1,185 @@
+@reference "../index.css";
+
+.login-page {
+  @apply relative min-h-screen overflow-hidden bg-[#0e0e0e] text-[#e5e2e1];
+}
+
+.login-ambient {
+  @apply fixed inset-0 pointer-events-none;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255, 140, 0, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(255, 183, 125, 0.05) 0%, transparent 40%);
+}
+
+.login-blob {
+  @apply fixed rounded-full pointer-events-none;
+}
+
+.login-blob-top {
+  @apply top-[-10%] right-[-10%] h-[500px] w-[500px] bg-[#ffb77d]/5 blur-[120px];
+}
+
+.login-blob-bottom {
+  @apply bottom-[-5%] left-[-5%] h-[400px] w-[400px] bg-[#ffe2ab]/5 blur-[100px];
+}
+
+.login-main {
+  @apply relative z-10 flex min-h-screen flex-col items-center justify-center p-6;
+}
+
+.login-branding {
+  @apply mb-12 flex flex-col items-center space-y-4;
+}
+
+.login-branding-orb-wrap {
+  @apply relative;
+}
+
+.login-branding-orb-glow {
+  @apply absolute inset-0 scale-150 bg-[#ff8c00] opacity-20 blur-2xl;
+}
+
+.login-branding-orb {
+  @apply relative flex h-16 w-16 items-center justify-center rounded-full border border-[#ffb77d]/20 bg-[#353534];
+  filter: drop-shadow(0 0 15px rgba(255, 140, 0, 0.4));
+}
+
+.login-branding-orb .material-symbols-outlined {
+  @apply text-4xl text-[#ffb77d];
+}
+
+.login-brand-title {
+  @apply text-3xl font-black tracking-tighter text-[#ff8c00];
+}
+
+.login-card {
+  @apply relative w-full max-w-md rounded-[2.5rem] border border-[#564334]/10 p-10;
+  background: rgba(10, 10, 11, 0.4);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: inset 0 1px 0 0 rgba(255, 183, 125, 0.1);
+}
+
+.login-status-rail {
+  @apply absolute left-0 top-1/4 bottom-1/4 w-[2px] rounded-r-full bg-[#ffb77d] shadow-[0_0_10px_rgba(255,140,0,0.5)];
+}
+
+.login-card-header {
+  @apply mb-8 space-y-2;
+}
+
+.login-card-kicker {
+  @apply text-[0.65rem] uppercase tracking-[0.25em] text-[#ffb77d];
+}
+
+.login-card-title {
+  @apply text-4xl font-light leading-tight;
+}
+
+.login-card-title span {
+  @apply font-medium italic text-[#ffb77d];
+}
+
+.login-card-copy {
+  @apply text-sm leading-relaxed text-[#ddc1ae]/60;
+}
+
+.login-actions {
+  @apply space-y-6;
+}
+
+.login-primary-btn {
+  @apply relative flex w-full items-center justify-between overflow-hidden rounded-2xl bg-[#ff8c00] px-6 py-5 shadow-[0_10px_30px_rgba(255,140,0,0.25)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.login-primary-btn-left {
+  @apply flex items-center gap-4;
+}
+
+.login-primary-btn-icon {
+  @apply flex h-10 w-10 items-center justify-center rounded-xl bg-[#623200]/10;
+}
+
+.login-primary-btn-icon .material-symbols-outlined {
+  @apply text-[#623200];
+}
+
+.login-primary-btn-title {
+  @apply block text-left text-sm font-bold text-[#623200];
+}
+
+.login-primary-btn-subtitle {
+  @apply block text-left text-[10px] uppercase tracking-wider text-[#623200]/60;
+}
+
+.login-primary-btn-arrow {
+  @apply text-[#623200] transition-transform;
+}
+
+.login-primary-btn:hover .login-primary-btn-arrow {
+  transform: translateX(0.25rem);
+}
+
+.login-spinner {
+  @apply h-5 w-5 animate-spin text-[#623200];
+}
+
+.login-secondary-grid {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.login-secondary-btn {
+  @apply flex flex-col items-center justify-center space-y-2 rounded-2xl border border-[#564334]/10 bg-[#353534]/40 px-4 py-4 transition-colors hover:bg-[#353534]/60;
+}
+
+.login-secondary-btn .material-symbols-outlined {
+  @apply text-zinc-400;
+}
+
+.login-secondary-btn span:last-child {
+  @apply text-[10px] uppercase tracking-widest text-zinc-500;
+}
+
+.wallet-missing-box {
+  @apply rounded-2xl border border-orange-500/30 bg-orange-500/10 p-4 text-center;
+}
+
+.wallet-missing-box p {
+  @apply mb-3 font-medium text-orange-400;
+}
+
+.install-btn {
+  @apply rounded-xl bg-orange-500 px-6 py-2 font-bold text-white transition-colors hover:bg-orange-600;
+}
+
+.error-message {
+  @apply rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-center text-sm text-red-400;
+}
+
+.login-card-footer {
+  @apply mt-10 flex items-start space-x-3 border-t border-[#564334]/5 pt-8;
+}
+
+.login-card-footer .material-symbols-outlined {
+  @apply text-sm text-[#ffb77d]/40;
+}
+
+.login-card-footer p {
+  @apply text-[11px] uppercase tracking-wider text-[#ddc1ae]/40;
+}
+
+.login-terminal-status {
+  @apply mt-12 flex items-center space-x-8 opacity-40;
+}
+
+.login-terminal-status > div {
+  @apply flex items-center space-x-2;
+}
+
+.login-terminal-status span {
+  @apply text-[10px] uppercase tracking-tight;
+}
+
+.login-dot {
+  @apply h-1.5 w-1.5 rounded-full bg-[#ffb77d] shadow-[0_0_5px_#ff8c00] animate-pulse;
+}
