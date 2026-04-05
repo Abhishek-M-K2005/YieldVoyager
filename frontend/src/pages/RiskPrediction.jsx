@@ -188,13 +188,17 @@ export default function RiskPrediction() {
                     </div>
                     <div className="space-y-1">
                       <span className="text-gray-500 text-xs uppercase">Investment Goal</span>
-                      <input
-                        type="text"
+                      <select
                         value={investmentGoal}
                         onChange={(e) => setInvestmentGoal(e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-700 rounded p-2 text-sm text-white placeholder-gray-500"
-                        placeholder="e.g. Yield Farming, Long-term Growth"
-                      />
+                        className="w-full bg-gray-800 border border-gray-700 rounded p-2 text-sm text-white"
+                      >
+                        <option value="Long-term Growth">Long-term Growth</option>
+                        <option value="Yield Farming">Yield Farming</option>
+                        <option value="Stable Income">Stable Income</option>
+                        <option value="Speculative Trading">Speculative Trading</option>
+                        <option value="Capital Preservation">Capital Preservation</option>
+                      </select>
                     </div>
                   </div>
                 </div>

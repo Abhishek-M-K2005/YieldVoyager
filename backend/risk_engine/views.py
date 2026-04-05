@@ -25,10 +25,10 @@ class ProtocolRiskView(APIView):
         tvl_val = vault.tvl if vault else 5000000
         
         features = {
-            "tvl_change_24h": metadata.get("tvl_change_24h", -2.5), 
-            "tvl_change_7d": metadata.get("tvl_change_7d", 1.2),
-            "tvl_change_3d": metadata.get("tvl_change_3d", -0.5),
-            "tvl_momentum": metadata.get("tvl_momentum", -0.1),
+            "tvl_change_24h": metadata.get("tvl_change_24h", 0.0), 
+            "tvl_change_7d": metadata.get("tvl_change_7d", 0.0),
+            "tvl_change_3d": metadata.get("tvl_change_3d", 0.0),
+            "tvl_momentum": metadata.get("tvl_momentum", 0.0),
             "log_liquidity_depth": metadata.get("log_liquidity_depth", math.log(tvl_val) if tvl_val > 0 else 0),
             "vol_ratio": metadata.get("vol_ratio", 1.1),
             "utilisation_ratio": metadata.get("utilisation_ratio", 0.65),
@@ -87,10 +87,10 @@ class BestProtocolView(APIView):
             tvl_val = vault.tvl if vault else 5000000
             
             features = {
-                "tvl_change_24h": metadata.get("tvl_change_24h", -2.5), 
-                "tvl_change_7d": metadata.get("tvl_change_7d", 1.2),
-                "tvl_change_3d": metadata.get("tvl_change_3d", -0.5),
-                "tvl_momentum": metadata.get("tvl_momentum", -0.1),
+                "tvl_change_24h": metadata.get("tvl_change_24h", 0.0), 
+                "tvl_change_7d": metadata.get("tvl_change_7d", 0.0),
+                "tvl_change_3d": metadata.get("tvl_change_3d", 0.0),
+                "tvl_momentum": metadata.get("tvl_momentum", 0.0),
                 "log_liquidity_depth": metadata.get("log_liquidity_depth", math.log(tvl_val) if tvl_val > 0 else 0),
                 "vol_ratio": metadata.get("vol_ratio", 1.1),
                 "utilisation_ratio": metadata.get("utilisation_ratio", 0.65),
