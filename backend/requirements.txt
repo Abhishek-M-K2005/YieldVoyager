@@ -4,3 +4,11 @@ chromadb
 openai
 python-dotenv
 google-genai
+scikit-learn
+xgboost
+catboost
+lightgbm
+pandas
+joblib
+scipy
+numpy

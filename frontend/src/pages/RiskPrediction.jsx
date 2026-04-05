@@ -129,11 +129,8 @@ export default function RiskPrediction() {
     }
   };
 
-  // Compute Active Display Score based on Model Selection
-  const displayScore = result && !result.is_overall && selectedModel !== "aggregate" && result.individual_model_scores
-    ? result.individual_model_scores[selectedModel]
-    : result ? result.risk_score : 0;
-
+  // Compute Active Display Score
+  const displayScore = result ? result.risk_score : 0;
   const displayLevel = displayScore < 4 ? 'low' : displayScore < 7 ? 'medium' : 'high';
 
   // Mock data for radar chart visualization of risk factors
@@ -277,21 +274,7 @@ export default function RiskPrediction() {
                         <Shield className="w-32 h-32" />
                       </div>
                       <div className="flex justify-between items-start mb-1">
-                        <h3 className="text-gray-400 font-medium">{result.is_overall ? "Top Recommended Protocol" : "Risk Score"}</h3>
-
-                        {/* Multi-Model Selector (Only shown if individual protocol analysis with models returned) */}
-                        {!result.is_overall && result.individual_model_scores && Object.keys(result.individual_model_scores).length > 0 && (
-                          <select
-                            value={selectedModel}
-                            onChange={(e) => setSelectedModel(e.target.value)}
-                            className="bg-gray-900 border border-gray-700 text-xs rounded px-2 py-1 text-gray-300"
-                          >
-                            <option value="aggregate">Aggregate Ensemble</option>
-                            {Object.keys(result.individual_model_scores).map(key => (
-                              <option key={key} value={key}>{key}</option>
-                            ))}
-                          </select>
-                        )}
+                        <h3 className="text-gray-400 font-medium">{result.is_overall ? "Top Recommended Protocol" : "Aggregate AI Risk Score"}</h3>
                       </div>
 
                       {result.is_overall && (
@@ -300,13 +283,13 @@ export default function RiskPrediction() {
 
                       <div className="flex items-baseline gap-4 mb-4">
                         <span className={`text-5xl font-bold ${displayScore < 4 ? 'text-green-400' :
-                            displayScore < 7 ? 'text-yellow-400' : 'text-red-500'
+                          displayScore < 7 ? 'text-yellow-400' : 'text-red-500'
                           }`}>
                           {displayScore}/10
                         </span>
                         <span className={`px-3 py-1 rounded-full text-sm font-medium uppercase tracking-wider ${displayLevel === 'low' ? 'bg-green-900/30 text-green-400 border border-green-800' :
-                            displayLevel === 'medium' ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-800' :
-                              'bg-red-900/30 text-red-400 border border-red-800'
+                          displayLevel === 'medium' ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-800' :
+                            'bg-red-900/30 text-red-400 border border-red-800'
                           }`}>
                           {displayLevel} Risk
                         </span>
@@ -354,6 +337,26 @@ export default function RiskPrediction() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Individual Models Grid */}
+                  {!result.is_overall && result.individual_model_scores && Object.keys(result.individual_model_scores).length > 0 && (
+                    <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                      <h3 className="text-gray-400 font-medium mb-4 flex items-center gap-2">
+                        <Brain className="w-5 h-5 text-blue-400" />
+                        Underlying Models Breakdown
+                      </h3>
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        {Object.entries(result.individual_model_scores).map(([name, val]) => (
+                          <div key={name} className="bg-gray-900 p-4 rounded-lg flex flex-col items-center justify-center border border-gray-700 shadow shadow-black/50">
+                            <span className="text-xs font-semibold text-gray-400 mb-2 truncate w-full text-center" title={name}>{name}</span>
+                            <span className={`text-xl font-bold ${(val * 10) < 4 ? 'text-green-500' : (val * 10) < 7 ? 'text-yellow-500' : 'text-red-500'}`}>
+                              {(val * 10).toFixed(1)}/10
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* AI Explanation */}
                   <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-blue-900/30 shadow-lg">

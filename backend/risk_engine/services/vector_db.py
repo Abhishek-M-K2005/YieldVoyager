@@ -35,14 +35,37 @@ def store_protocol_context(protocol_name, features, risk_score, risk_level):
         # We use protocol_name as ID to easily upsert/update the latest context
         doc_id = f"context_{protocol_name.lower().replace(' ', '_')}"
         
+        # Build metadata with all real-time features
+        metadata = {"protocol": protocol_name, "risk_score": float(risk_score) if risk_score else 0.0, "level": risk_level}
+        for k, v in features.items():
+            if v is not None:
+                metadata[k] = float(v) if isinstance(v, (int, float)) else str(v)
+        
         collection.upsert(
             documents=[document_text],
-            metadatas=[{"protocol": protocol_name, "risk_score": risk_score, "level": risk_level}],
+            metadatas=[metadata],
             ids=[doc_id]
         )
         logger.info(f"Stored Vector DB context for {protocol_name}")
     except Exception as e:
         logger.error(f"Failed to store context in ChromaDB: {e}")
+
+def get_protocol_metadata(protocol_name):
+    """
+    Retrieves the raw features and metadata exactly as pushed by the scheduler.
+    """
+    if collection is None:
+        return {}
+    
+    try:
+        doc_id = f"context_{protocol_name.lower().replace(' ', '_')}"
+        result = collection.get(ids=[doc_id])
+        if result and result.get("metadatas") and len(result["metadatas"]) > 0:
+            return result["metadatas"][0]
+        return {}
+    except Exception as e:
+        logger.error(f"Failed to fetch metadata from ChromaDB for {protocol_name}: {e}")
+        return {}
 
 def get_similar_contexts(query_text, n_results=2):
     """

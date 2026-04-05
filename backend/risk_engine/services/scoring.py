@@ -14,12 +14,9 @@ def risk_band(score):
 
 def compute_and_store_risk(protocol, features):
     REQUIRED_FEATURES = [
-        "tvl_change_24h",
-        "tvl_change_7d",
-        "liquidity_depth",
-        "utilisation_ratio",
-        "oracle_price_std",
-        "liquidation_spike_ratio"
+        'tvl_change_24h', 'tvl_change_7d', 'tvl_change_3d', 'tvl_momentum',
+        'log_liquidity_depth', 'vol_ratio', 'utilisation_ratio', 'oracle_price_std',
+        'liquidation_spike_ratio', 'audit_count'
     ]
 
     for f in REQUIRED_FEATURES:
