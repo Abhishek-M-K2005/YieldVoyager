@@ -49,6 +49,7 @@ venv.bak/
 # Backend specific
 backend/venv
 backend/db.sqlite3
+backend/risk_engine/ml_assets/models
 
 # Node (root level)
 node_modules/

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { computeRisk } from "../api/risk";
 import { ethers } from "ethers";
+import ReactMarkdown from 'react-markdown';
 
 // Reusable Tooltip Component for pure CSS hover effects
 const Tooltip = ({ text }) => (
@@ -171,9 +172,11 @@ export default function Dashboard() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               AI Risk Analysis
             </h3>
-            <p className="text-gray-300 leading-relaxed text-lg">
-              {riskResult.llm_explanation}
-            </p>
+            <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-p:text-lg prose-p:text-gray-300">
+              <ReactMarkdown>
+                {riskResult.llm_explanation}
+              </ReactMarkdown>
+            </div>
           </div>
         )}
 

@@ -1,8 +1,13 @@
 import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
 
 # Set up your LLM client here
 client = None
 types = None
+llm_init_error = None
 
 try:
     from google import genai
@@ -11,10 +16,14 @@ try:
     api_key = os.getenv("GEMINI_API_KEY")
     if api_key:
         client = genai.Client(api_key=api_key)
+    else:
+        llm_init_error = "GEMINI_API_KEY not found in environment variables."
 except ImportError:
-    print("Warning: google-genai package not installed or import error. LLM features disabled.")
+    llm_init_error = "google-genai package not installed or import error."
+    print(f"Warning: {llm_init_error} LLM features disabled.")
 except Exception as e:
-    print(f"Error initializing LLM client: {e}")
+    llm_init_error = f"Error initializing LLM client: {e}"
+    print(llm_init_error)
 
 def generate_risk_explanation(model_features, risk_result, user_wallet_address, user_balance, user_risk_tolerance="medium", user_investment_goal="Unknown", chromadb_context="No historical context available."):
     """
@@ -29,39 +38,39 @@ def generate_risk_explanation(model_features, risk_result, user_wallet_address, 
     individual_str = str(individual_scores) if individual_scores else "N/A"
 
     prompt = f"""
-    You are an expert DeFi (Decentralized Finance) AI risk analyst and investment advisor.
+    ### DeFi Risk Analysis & Investment Recommendation
     
-    A user is considering deploying funds. Based on the RAG context, multi-model outputs, and user profile, you MUST provide a lengthy, highly detailed, and verbose explanation predicting the best way for them to invest their money and explain the risks.
+    You are a professional DeFi risk analyst. Provide a highly detailed, data-driven, and technical analysis. 
+    **MANDATORY:** Start your response IMMEDIATELY with the analysis. Do NOT use any introductory greetings, roleplay (e.g., "Ah, my esteemed client"), or pleasantries.
     
-    ### User Profile
-    - Wallet Address: {user_wallet_address}
-    - Wallet Balance: {user_balance} ETH
-    - Risk Tolerance: {user_risk_tolerance.upper()}
+    - User Wallet: {user_wallet_address} ({user_balance} ETH)
+    - Risk Profile: {user_risk_tolerance.upper()} tolerance
     - Investment Goal: {user_investment_goal}
     
-    ### Current LIVE Protocol Metrics (from Vector DB)
+    ### PROTOCOL DATA (LIVE)
     - 24h TVL Change: {model_features.get('tvl_change_24h')}
     - 7d TVL Change: {model_features.get('tvl_change_7d', 'N/A')}
-    - Liquidity Depth: ${model_features.get('log_liquidity_depth')} (log scale)
+    - Log Liquidity Depth: {model_features.get('log_liquidity_depth')}
     - Protocol Age: {model_features.get('protocol_age_days')} days
     
-    ### AI Risk Engine (Multi-Model Ensemble)
+    ### MULTI-MODEL ENSEMBLE SCORES
     - Aggregate Risk Score: {risk_result.get('risk_score')} / 10.0
     - Risk Level: {risk_result.get('level')}
-    - Individual Model Outputs: {individual_str}
+    - Model Breakdown: {individual_str}
     
-    ### Historical Market Snapshot (ChromaDB RAG Context)
+    ### HISTORICAL CONTEXT (RAG)
     {chromadb_context}
 
-    Please provide a structured, LENGTHY, and VERBOSE response:
-    1. **Extended Risk Analysis:** In-depth evaluation of why the score is {risk_result.get('risk_score')} based on all 10 underlying model predictions. Explain their variances.
-    2. **Contextual Shift:** How the LIVE metrics contrast deeply with historical ChromaDB snapshots.
-    3. **Investment Prediction & Recommendation:** Predict the absolute BEST path for THIS specific user. Provide exact strategy ideas that fit their {user_balance} ETH and {user_investment_goal} goal given they have {user_risk_tolerance.upper()} tolerance.
+    **RESPONSE STRUCTURE (VERBOSE):**
+    1. **Extended Technical Analysis:** Deep dive into the {risk_result.get('risk_score')} score. Explain exactly what the 10 models are seeing in the TVL and liquidity data.
+    2. **Comparative Insights:** Contrast the 24h/7d LIVE metrics against the provided RAG context.
+    3. **Strategic Prediction:** Based on {user_risk_tolerance.upper()} and {user_investment_goal}, what is the absolute BEST multi-step move for {user_balance} ETH? Be specific.
     """
 
     if not client:
+        error_msg = llm_init_error or "LLM client not initialized."
         return (
-            f"**Simulated AI Response (No API Key found):**\\n\\n"
+            f"**Simulated AI Response ({error_msg}):**\\n\\n"
             f"The protocol has an aggregate risk score of {risk_result.get('risk_score')}/10 ({risk_result.get('level')}). "
             f"Based on your {user_risk_tolerance} risk tolerance and {user_balance} ETH balance, "
             f"please invest cautiously. Historical context: {chromadb_context[:100]}..."
@@ -69,11 +78,11 @@ def generate_risk_explanation(model_features, risk_result, user_wallet_address, 
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-flash-latest",
             contents=prompt,
             config=types.GenerateContentConfig(
-                system_instruction="You are a lengthy and highly verbose helpful DeFi risk assistant.",
-                max_output_tokens=1500,
+                system_instruction="You are a professional DeFi risk analyst. Your responses must be technical, verbose, and structured. START IMMEDIATELY with the analysis.",
+                max_output_tokens=4096,
                 temperature=0.7
             )
         )
@@ -91,41 +100,39 @@ def generate_best_protocol_explanation(protocol_scores, user_wallet_address, use
         scores_str += f"- {prot}: Risk Score {data['score']}/10 ({data['level']})\\n"
 
     prompt = f"""
-    You are an expert DeFi (Decentralized Finance) AI risk analyst and investment advisor.
+    ### Ecosystem-Wide "Best Pick" Pick Analysis
     
-    A user is deciding where to deploy their capital across multiple active protocols. Analyze ALL LIVE protocol scores alongside the ChromaDB historical context, and produce a LENGTHY, VERBOSE "Best Pick" recommendation based intensely on their profile.
+    You are a professional DeFi ecosystem advisor. Provide a technical, lengthy, and data-backed "Best Pick" recommendation.
+    **MANDATORY:** Start your response IMMEDIATELY with the analysis. Do NOT use any introductory greetings, roleplay, or pleasantries.
     
-    ### User Profile
-    - Wallet Address: {user_wallet_address}
-    - Wallet Balance: {user_balance} ETH
-    - Risk Tolerance: {user_risk_tolerance.upper()}
-    - Investment Goal: {user_investment_goal}
+    - User Profile: {user_balance} ETH | {user_risk_tolerance.upper()} Tolerance | {user_investment_goal} Goal
     
-    ### Ecosystem LIVE Protocol Scores (Multi-Model Aggregates)
+    ### ECOSYSTEM SCORES (Multi-Model Aggregates)
     {scores_str}
     
-    ### Historical Market Snapshot (ChromaDB RAG Context)
+    ### HISTORICAL CONTEXT (RAG)
     {chromadb_context}
 
-    Provide a highly detailed, LENGTHY, and VERBOSE response:
-    1. **Deep Ecosystem Overview:** A comprehensive summary of the current market state leveraging the ChromaDB metrics against the new live scores.
-    2. **Protocol Analysis:** Why you discarded specific protocols given their AI risk scores models and the user's {user_risk_tolerance.upper()} risk tolerance.
-    3. **The Absolute Best Pick:** Crown the best protocol dynamically from the scores. Write a lengthy paragraph explaining exactly why this protocol mathematically and practically aligns with their {user_investment_goal} goal. Detail a multi-step execution plan for their {user_balance} ETH.
+    **RESPONSE STRUCTURE (VERBOSE):**
+    1. **Deep Ecosystem Analysis:** Compare the current scores against ChromaDB historical baselines.
+    2. **Strategic Filtering:** Why protocols were eliminated based on {user_risk_tolerance.upper()} and {user_investment_goal}.
+    3. **The Absolute Best Deployment:** Crown one protocol as the winner and provide a technical execution plan for {user_balance} ETH.
     """
 
     if not client:
+        error_msg = llm_init_error or "LLM client not initialized."
         return (
-            f"**Simulated AI Response (No API Key found):**\\n\\n"
+            f"**Simulated AI Response ({error_msg}):**\\n\\n"
             f"Based on your {user_risk_tolerance.upper()} risk tolerance, the best option right now is the lowest-risk protocol shown above. Historical market data confirms stable conditions."
         )
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-flash-latest",
             contents=prompt,
             config=types.GenerateContentConfig(
-                system_instruction="You are a brilliant, verbose DeFi ecosystem advisor that loves lengthy explanations.",
-                max_output_tokens=1500,
+                system_instruction="You are a professional DeFi ecosystem advisor. Your responses must be technical, lengthy, and structured. START IMMEDIATELY with the analysis.",
+                max_output_tokens=4096,
                 temperature=0.7
             )
         )

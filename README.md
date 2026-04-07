@@ -1,31 +1,129 @@
-# YieldVoyager
+# YieldVoyager 🛸
 
-YieldVoyager is an intelligent, full-stack DeFi risk analysis platform that helps investors navigate the complexities of decentralized finance. It utilizes a powerful Multi-Model Machine Learning Engine and a ChromaDB-backed Retrieval Augmented Generation (RAG) system to provide personalized, real-time risk assessments.
+**YieldVoyager** is a professional-grade DeFi risk analysis and investment orchestration platform. It combines a high-fidelity **Multi-Model Machine Learning Ensemble** with a **ChromaDB-backed RAG (Retrieval-Augmented Generation)** pipeline to provide deeply personalized, data-rooted risk assessments for decentralized protocols.
 
-## Core Architecture
 
-### 1. Multi-Model Risk Engine
-The system dynamically loads up to 10 distinct trained Machine Learning models (`.pkl` format) from the backend. Instead of relying on a single algorithm, YieldVoyager aggregates predictions across all models to generate a highly robust and balanced **Aggregate Risk Score**. Individual model scores are also preserved for granular analysis.
+---
 
-### 2. Live Market Vector Context (ChromaDB)
-YieldVoyager features a background APScheduler that polls real-time protocol data (TVL, APY, Chain) from DeFiLlama. This data is intelligently chunked, embedded, and stored into ChromaDB. During inference, the RAG pipeline retrieves the most relevant historical and market contexts to root the LLM's logic in factual data.
+## 🌟 Key Features
 
-### 3. Personalized LLM Explanations
-The aggregate risk scores, individual model predictions, and ChromaDB vector contexts are piped into the Gemini Large Language Model. Factoring in the user’s Web3-authenticated global profile preferences (**Risk Tolerance** and **Investment Goal**), the LLM generates deeply personalized, human-readable investment thesis explanations.
+### 🧠 1. Multi-Model Ensemble Engine
+Unlike traditional systems that rely on a single analysis vector, YieldVoyager utilizes an ensemble of **10 distinct ML models** (including XGBoost, LightGBM, CatBoost, Random Forest, and Extra Trees).
+- **Aggregate Scoring**: Generates a balanced 1.0 - 10.0 risk score.
+- **Divergence Analysis**: Identifies when models disagree (e.g., CatBoost flagging categorical anomalies while XGBoost sees stability).
 
-### 4. Full-Stack Tech
-- **Frontend**: React + Vite + TailwindCSS. Sleek dark-mode UX, intuitive charting, dynamic ML Dropdowns, interactive web3 wallet integration.
-- **Backend & Auth**: Django REST Framework + Web3 SIWE (Sign-In-With-Ethereum).
-- **Network Ecosystem Analysis**: Includes an "Analyze All Protocols" endpoint that assesses the holistic market state and recommends the paramount yield strategy.
+### 📚 2. Real-Time RAG Pipeline (ChromaDB)
+The system maintains a living "memory" of the DeFi ecosystem.
+- **Background Sync**: An APScheduler-driven worker polls **DeFiLlama** every 15 minutes.
+- **Vector Context**: Real-time metrics (TVL changes, liquidity depth) are embedded into **ChromaDB**.
+- **Contextual Retrieval**: During analysis, the system retrieves relevant historical context to ensure AI responses are rooted in factual market data.
 
-## Getting Started
+### 🤖 3. Personalized AI Advisor
+Powered by **Google Gemini 1.5 Flash**, our AI advisor acts as a technical DeFi analyst.
+- **Hyper-Personalized**: Factors in user-specific **Risk Tolerance** (Low/Med/High) and **Investment Goals** (e.g., "Long-term growth").
+- **Structured Output**: Delivers verbose, Markdown-formatted technical theses including comparative insights and execution plans.
 
-1. Place the 10 trained `.pkl` models inside `backend/risk_engine/ml_assets/models/`.
-2. Place the ML raw dataset CSV inside `backend/risk_engine/ml_assets/data/`.
-3. Set your `GEMINI_API_KEY` in your `.env` file.
-4. Run migrations: `python manage.py migrate`
-5. Start the backend: `python manage.py runserver`
-6. Start the frontend: `npm run dev` in the `frontend/` directory.
+### 🔐 4. Web3 Authentication (SIWE)
+- **Decentralized Identity**: Sign-In-With-Ethereum (SIWE) implementation using MetaMask.
+- **Secure Persistence**: JWT-based session management linked to wallet addresses.
 
-## Team Members:
-(List team members here)
+---
+
+## 🛠️ Tech Stack
+
+| Component | Technology |
+| :--- | :--- |
+| **Frontend** | React 18, Vite, TailwindCSS (Tipography), Recharts, Ethers.js, Lucide Icons |
+| **Backend** | Python 3.12, Django, Django REST Framework, APScheduler |
+| **Database** | SQLite (Metadata), ChromaDB (Vector Store) |
+| **AI/ML** | Google Gemini API, Scikit-learn, XGBoost, CatBoost, LightGBM |
+| **Auth** | Web3 (Ethers.js), Sign-In-With-Ethereum (SIWE) |
+
+---
+
+## 📂 Project Structure
+
+```bash
+YieldVoyager/
+├── backend/                # Django REST API (Python 3.12)
+│   ├── auth_web3/          # SIWE (Web3) Auth & User Profiles
+│   ├── backend/            # Django Project Configuration & Settings
+│   ├── chroma_db/          # Persistent Vector Store (ChromaDB)
+│   ├── defi/               # Scheduler & DeFiLlama Data Aggregator
+│   ├── risk_engine/        # Core Multi-Model & RAG Logic
+│   │   ├── accessories/    # Supplementary Metadata & Data Links
+│   │   ├── ml_assets/      # ML Model Storage
+│   │   │   └── models/     # 10+ Trained Ensemble Models (.pkl)
+│   │   └── services/       # VectorDB, LLM, Scoring, and Inference Logic
+│   ├── manage.py           # Django Entry Point
+│   └── requirements.txt    # Backend Dependencies
+├── frontend/               # React + Vite Application
+│   ├── src/
+│   │   ├── api/            # API Service Layer
+│   │   ├── components/     # Reusable UI Components (Header, etc.)
+│   │   ├── context/        # Global Auth & State Management
+│   │   └── pages/          # Application Views (Dashboard, Prediction, Profile)
+│   ├── tailwind.config.js  # Styling Configuration
+│   └── vite.config.js      # Build & Dev Tooling
+└── README.md
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- Node.js (v18+)
+- Python (3.10+)
+- MetaMask Browser Extension
+
+### 2. Backend Setup
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+
+# Initial Setup
+python manage.py migrate
+python manage.py createsuperuser # Optional
+
+# Configure Environment
+# Create a .env file in the backend directory:
+# GEMINI_API_KEY=your_key_here
+# DEBUG=True
+
+# Start syncing data & Server
+python manage.py runserver
+```
+
+### 3. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Visit `http://localhost:5173` to explore the Voyager.
+
+---
+
+## 📊 AI Output Sample
+```markdown
+### DeFi Risk Analysis: Binance Protocol
+**Score: 4.05/10.0 (Medium Risk)**
+
+1. **Extended Technical Analysis**: 
+   - XGBoost (0.04) suggests extreme stability based on liquidity depth.
+   - CatBoost (0.99) flags a critical anomaly in TVL velocity (0.0% change over 7 days).
+2. **Comparative Insights**: Live data validates the RAG context trajectory but shows a "plateau phase" not seen in historical SSM snapshots.
+3. **Strategic Prediction**: For a "Medium" risk profile seeking "Long-term growth," we recommend a 30% deployment...
+```
+
+---
+
+## 🛡️ License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## 👥 Team
+- **Adarsh** (Lead Developer)
+- YieldVoyager Core Team

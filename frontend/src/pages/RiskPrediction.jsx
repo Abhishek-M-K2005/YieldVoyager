@@ -6,6 +6,8 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
 import { Shield, AlertTriangle, Check, Brain, Activity, TrendingUp, Globe } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function RiskPrediction() {
   const { wallet, balance } = useContext(AuthContext);
@@ -373,10 +375,10 @@ export default function RiskPrediction() {
                       </h3>
                     </div>
 
-                    <div className="prose prose-invert max-w-none">
-                      <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                    <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-headings:mb-4 prose-headings:mt-6 first:prose-headings:mt-0">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {result.llm_explanation || "No explanation available."}
-                      </p>
+                      </ReactMarkdown>
                     </div>
 
                     <div className="mt-6 pt-6 border-t border-gray-700/50 text-xs text-gray-500 flex justify-between items-center">
