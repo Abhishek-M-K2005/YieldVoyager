@@ -10,6 +10,10 @@ from .services.scoring import compute_and_store_risk
 from .services.llm import generate_risk_explanation, generate_best_protocol_explanation
 from .services.vector_db import get_protocol_metadata, get_similar_contexts
 
+
+def _clamp_score(value):
+    return max(0, min(100, int(round(value))))
+
 class ProtocolRiskView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = []
@@ -37,6 +41,43 @@ class ProtocolRiskView(APIView):
             "audit_count": metadata.get("audit_count", 1),
             "protocol_age_days": metadata.get("protocol_age_days", 365)
         }
+
+        # Build radar-chart factors from live model inputs so frontend can render dynamic values.
+        audit_count = float(features.get("audit_count", 0) or 0)
+        log_liquidity = float(features.get("log_liquidity_depth", 0) or 0)
+        util_ratio = float(features.get("utilisation_ratio", 0) or 0)
+        tvl_24h = abs(float(features.get("tvl_change_24h", 0) or 0))
+        tvl_7d = abs(float(features.get("tvl_change_7d", 0) or 0))
+        oracle_std = float(features.get("oracle_price_std", 0) or 0)
+        liq_spike = float(features.get("liquidation_spike_ratio", 0) or 0)
+
+        risk_factors = [
+            {
+                "subject": "Smart Contract",
+                "A": _clamp_score(55 + (audit_count * 8) - (liq_spike * 20)),
+                "fullMark": 100,
+            },
+            {
+                "subject": "Liquidity",
+                "A": _clamp_score(30 + (log_liquidity * 5)),
+                "fullMark": 100,
+            },
+            {
+                "subject": "Centralization",
+                "A": _clamp_score(100 - (util_ratio * 100)),
+                "fullMark": 100,
+            },
+            {
+                "subject": "Volatility",
+                "A": _clamp_score(100 - ((tvl_24h * 120) + (tvl_7d * 60) + (oracle_std * 500))),
+                "fullMark": 100,
+            },
+            {
+                "subject": "Audit",
+                "A": _clamp_score(audit_count * 20),
+                "fullMark": 100,
+            },
+        ]
         
         # LIVE REAL-TIME INFERENCE
         result = compute_and_store_risk(protocol, features)
@@ -64,6 +105,7 @@ class ProtocolRiskView(APIView):
         return Response({
             "protocol": protocol.name,
             **result,
+            "risk_factors": risk_factors,
             "llm_explanation": explanation
         }, status=status.HTTP_200_OK)
 

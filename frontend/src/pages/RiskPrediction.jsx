@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import Header from '../components/Header';
 import {
@@ -6,8 +6,6 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
 import { Shield, AlertTriangle, Check, Brain, Activity, TrendingUp, Globe } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 export default function RiskPrediction() {
   const { wallet, balance } = useContext(AuthContext);
@@ -135,14 +133,19 @@ export default function RiskPrediction() {
   const displayScore = result ? result.risk_score : 0;
   const displayLevel = displayScore < 4 ? 'low' : displayScore < 7 ? 'medium' : 'high';
 
-  // Mock data for radar chart visualization of risk factors
-  const riskFactors = [
-    { subject: 'Smart Contract', A: 80, fullMark: 100 },
-    { subject: 'Liquidity', A: 65, fullMark: 100 },
-    { subject: 'Centralization', A: 40, fullMark: 100 },
-    { subject: 'Volatility', A: 90, fullMark: 100 },
-    { subject: 'Audit', A: 70, fullMark: 100 },
-  ];
+  const riskFactors = useMemo(() => {
+    if (result?.risk_factors && Array.isArray(result.risk_factors) && result.risk_factors.length > 0) {
+      return result.risk_factors;
+    }
+
+    return [
+      { subject: 'Smart Contract', A: 80, fullMark: 100 },
+      { subject: 'Liquidity', A: 65, fullMark: 100 },
+      { subject: 'Centralization', A: 40, fullMark: 100 },
+      { subject: 'Volatility', A: 90, fullMark: 100 },
+      { subject: 'Audit', A: 70, fullMark: 100 },
+    ];
+  }, [result]);
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
@@ -257,7 +260,7 @@ export default function RiskPrediction() {
 
                 {error && (
                   <div className="p-4 bg-red-900/30 border border-red-800 rounded-lg flex items-start gap-3 text-red-200 text-sm">
-                    <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                    <AlertTriangle className="w-5 h-5 shrink-0" />
                     {error}
                   </div>
                 )}
@@ -365,7 +368,7 @@ export default function RiskPrediction() {
                   )}
 
                   {/* AI Explanation */}
-                  <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-blue-900/30 shadow-lg">
+                  <div className="bg-linear-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-blue-900/30 shadow-lg">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="p-2 bg-blue-500/10 rounded-lg">
                         <Brain className="w-6 h-6 text-blue-400" />
@@ -375,10 +378,10 @@ export default function RiskPrediction() {
                       </h3>
                     </div>
 
-                    <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-headings:mb-4 prose-headings:mt-6 first:prose-headings:mt-0">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    <div className="prose prose-invert max-w-none">
+                      <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                         {result.llm_explanation || "No explanation available."}
-                      </ReactMarkdown>
+                      </p>
                     </div>
 
                     <div className="mt-6 pt-6 border-t border-gray-700/50 text-xs text-gray-500 flex justify-between items-center">
